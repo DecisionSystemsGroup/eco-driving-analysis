@@ -19,25 +19,119 @@
 
 #!/usr/bin/python
 import sys
-import MySQLdb
+import MySQLdb as sql
 import json
+import numpy as np
+
+# Load Arguments
+operation = sys.argv[1] # Get the operation: get_trip
+
+if operation == "get_trip":	# Argument types change depending on the operation
+	get_trip_from = sys.argv[2]	#Timestamp in the format "2016-01-01 14:59"
+	get_trip_to = sys.argv[3]	#Timestamp in the format "2016-01-01 14:59"
 
 # Load configuration information
 with open('config.json') as json_data_file:
 	config = json.load(json_data_file)
 
-# Connect to the database
-db = MySQLdb.connect(
-	host = config['mysql']['host'],
-	user = config['mysql']['user'],
-	passwd = config['mysql']['passwd'],
-	db = config['mysql']['db']
-)
+if operation == "get_trip":
+	# Connect to the database
+	db = sql.connect(
+		host = config['mysql']['host'],
+		user = config['mysql']['user'],
+		passwd = config['mysql']['passwd'],
+		db = config['mysql']['db']
+	)
 
-# Create cursor object for the execution of the needed queries
-cur = db.cursor()
+	# Create cursor object for the execution of the needed queries
+	cur = db.cursor()
 
-# Add database queries here
+	# Get the trip from the database. If every driving quality in a row is zero
+	# or null ignore the row.
+	cur.execute(
+		"SELECT" + 
+			"`id`," +
+			"`driving_quality0`," +
+			"`driving_quality1`," +
+			"`driving_quality2`," +
+			"`driving_quality3`," +
+			"`driving_quality4`," +
+			"`driving_quality5`," +
+			"`driving_quality6`," +
+			"`driving_quality7`," +
+			"`driving_quality8`," +
+			"`driving_quality9`," +
+			"`driving_quality10`," +
+			"`driving_quality11`," +
+			"`driving_quality12`," +
+			"`driving_quality13`," +
+			"`driving_quality14`," +
+			"`driving_quality15`," +
+			"`driving_quality16`," +
+			"`driving_quality17`," +
+			"`driving_quality18`," +
+			"`driving_quality19`," +
+			"`driving_quality20`," +
+			"`wln_accel_max`," +
+			"`wln_brk_max`," +
+			"`speed`" +
+		"FROM `telemetry`" +
+		"WHERE ("+
+			"(`driving_quality0` != 0) ||" + 
+			"(`driving_quality1` != 0) ||" + 
+			"(`driving_quality2` != 0) ||" + 
+			"(`driving_quality3` != 0) ||" + 
+			"(`driving_quality4` != 0) ||" + 
+			"(`driving_quality5` != 0) ||" + 
+			"(`driving_quality6` != 0) ||" + 
+			"(`driving_quality7` != 0) ||" + 
+			"(`driving_quality8` != 0) ||" + 
+			"(`driving_quality9` != 0) ||" + 
+			"(`driving_quality10` != 0) ||" + 
+			"(`driving_quality11` != 0) ||" + 
+			"(`driving_quality12` != 0) ||" + 
+			"(`driving_quality13` != 0) ||" + 
+			"(`driving_quality14` != 0) ||" + 
+			"(`driving_quality15` != 0) ||" + 
+			"(`driving_quality16` != 0) ||" + 
+			"(`driving_quality17` != 0) ||" + 
+			"(`driving_quality18` != 0) ||" + 
+			"(`driving_quality19` != 0) ||" + 
+			"(`driving_quality20` != 0) ||" +
+			"(`driving_quality0` != null) ||" + 
+			"(`driving_quality1` != null) ||" + 
+			"(`driving_quality2` != null) ||" + 
+			"(`driving_quality3` != null) ||" + 
+			"(`driving_quality4` != null) ||" + 
+			"(`driving_quality5` != null) ||" + 
+			"(`driving_quality6` != null) ||" + 
+			"(`driving_quality7` != null) ||" + 
+			"(`driving_quality8` != null) ||" + 
+			"(`driving_quality9` != null) ||" + 
+			"(`driving_quality10` != null) ||" + 
+			"(`driving_quality11` != null) ||" + 
+			"(`driving_quality12` != null) ||" + 
+			"(`driving_quality13` != null) ||" + 
+			"(`driving_quality14` != null) ||" + 
+			"(`driving_quality15` != null) ||" + 
+			"(`driving_quality16` != null) ||" + 
+			"(`driving_quality17` != null) ||" + 
+			"(`driving_quality18` != null) ||" + 
+			"(`driving_quality19` != null) ||" + 
+			"(`driving_quality20` != null)" +
+		") && (" +
+			"(`time` >= '" + get_trip_from + "') && " +
+			"(`time` <= '" + get_trip_to + "')" +
+		")"	
+	)
 
-# Close the database connection
-db.close()
+	# Save the object in a list
+	list_trip = []
+	for row in cur.fetchall():
+		list_trip.append(row)
+
+	# Convert list to a numpy array
+	np_trip = np.array(list_trip)
+
+	# Close the database connection
+	db.close()
