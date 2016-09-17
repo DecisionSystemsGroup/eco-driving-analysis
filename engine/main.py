@@ -189,14 +189,14 @@ if operation == "save_student" or operation == "save_teacher":
 	# Save the object in a list
 	list_trip = []
 	for row in cur.fetchall():
-		row = list(row)			
+		row = list(row)	# Transform row from tuple to list, for append to work	
 		if operation == 'save_teacher':
 			row.append('tch')
 		elif operation == 'save_student':
 			row.append('std')
 		list_trip.append(row)
 
-	list_trip[list_trip==''] = '0'		
+	list_trip[list_trip==''] = '0'	# Change empty values to zero	
 
 	# Close the database connection
 	db.close()
@@ -207,8 +207,9 @@ if operation == "save_student" or operation == "save_teacher":
 		data = list_trip
 		a.writerows(data)
 
-	# Dance naked in the moonlight
 elif operation == "get_improvement":
+
+	# Load the datasets
 	dataset_teacher = create_dataset('../cache/trips/' + trip_teacher + '.csv')
 	dataset_trip_1 = create_dataset('../cache/trips/' + trip_1 + '.csv')
 	dataset_trip_2 = create_dataset('../cache/trips/' + trip_2 + '.csv')
@@ -220,6 +221,7 @@ elif operation == "get_improvement":
 	    n_jobs = config['knn']['n_jobs']           	# Number of CPU cores used
 	)
 
+	# Train the kNN
 	clf.fit(
 		np.concatenate(
 			(
@@ -236,3 +238,8 @@ elif operation == "get_improvement":
 			axis=0
 		),
 	)
+
+	# Predict if trip_2 is nearest to teacher or trip_1
+	proba = clf.predict_proba(dataset_trip_2['data'])
+
+	print proba
