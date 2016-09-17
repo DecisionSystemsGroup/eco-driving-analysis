@@ -25,9 +25,9 @@ import numpy as np
 import csv
 
 # Load Arguments
-operation = sys.argv[1] # Get the operation: save_trip, train_knn
+operation = sys.argv[1] # Get the operation: save_student, train_knn
 
-if operation == "save_trip":	# Argument types change depending on operation
+if operation == "save_student" or operation == "save_teacher":	
 	filename = sys.argv[2]		# A string for filename
 	get_trip_from = sys.argv[3]	# Timestamp in the format "2016-01-01 14:59"
 	get_trip_to = sys.argv[4]	# Timestamp in the format "2016-01-01 14:59"
@@ -36,7 +36,61 @@ if operation == "save_trip":	# Argument types change depending on operation
 with open('config.json') as json_data_file:
 	config = json.load(json_data_file)
 
-if operation == "save_trip":
+###############
+## FUNCTIONS ##
+###############
+
+def create_dataset(csv_dir):
+    # Imports a csv file and returns a dictionary with the data and target to
+    # be used in kNN
+    
+    # Load csv file into list
+    with open(csv_dir, 'rb') as f:
+        reader = csv.reader(f)
+        list_csv = list(reader)
+        
+    # Split list to data and target(classes)
+    data = []
+    target = []    
+    for row in list_csv:
+        data.append(row[:24])
+        target.append(row[24])
+    
+    # Convert lists to numpy array
+    data = np.array(data)
+    target = np.array(target)
+    
+    # Replace N/A values with 0
+    data[data==''] = '0'
+    target[target==''] = '0'
+    
+    return {'data': merge_qualities(data), 'target': target}
+    
+def merge_qualities(data):
+    # Merges the quality columns (0 - 20) into one weighted number
+
+    data_qual = data[:,:21] # Subset the driving quality cols
+    
+    qualities = [];
+    for row in data_qual:
+        # For each row do the sum of each col * 10 ^ a power from -10 to 10 
+        # starting from -10 for the first col and ending to 10 for the 20th            
+        merger = 0.0
+        power = -10;
+        for col in row:
+            merger += int(col) * (10 ** power)
+            power += 1   
+        qualities.append(merger)    # Save the generated num to the qual array
+    
+    data_rest = data[:,21:] # Subset maxAcc, maxBrk and Speed from the dataset
+    
+    qualities = np.array(qualities) # Transform the qualities to numpy array
+    qualities = qualities[:, None]  # Make qualities a 2D array for hstack to work
+    
+    data_exp = np.hstack((qualities,data_rest)) # Merge qualities and the rest
+    return data_exp
+
+if operation == "save_student" or operation == "save_teacher":
 	# Connect to the database
 	db = sql.connect(
 		host = config['mysql']['host'],
@@ -129,7 +183,14 @@ if operation == "save_trip":
 	# Save the object in a list
 	list_trip = []
 	for row in cur.fetchall():
+		row = list(row)			
+		if operation == 'save_teacher':
+			row.append('tch')
+		elif operation == 'save_student':
+			row.append('std')
 		list_trip.append(row)
+
+	list_trip[list_trip==''] = '0'		
 
 	# Close the database connection
 	db.close()
