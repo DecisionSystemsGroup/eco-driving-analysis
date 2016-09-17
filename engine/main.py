@@ -23,6 +23,8 @@ import MySQLdb as sql
 import json
 import numpy as np
 import csv
+import sklearn as sk
+from sklearn import neighbors
 
 # Load Arguments
 operation = sys.argv[1] # Get the operation: save_student, train_knn
@@ -31,6 +33,10 @@ if operation == "save_student" or operation == "save_teacher":
 	filename = sys.argv[2]		# A string for filename
 	get_trip_from = sys.argv[3]	# Timestamp in the format "2016-01-01 14:59"
 	get_trip_to = sys.argv[4]	# Timestamp in the format "2016-01-01 14:59"
+elif operation == "get_improvement":
+	trip_1 = sys.argv[2]		# The filenames of csvs created previously 
+	trip_teacher = sys.argv[3]	# with the save_student operation
+	trip_2 = sys.argv[4]
 
 # Load configuration information
 with open('config.json') as json_data_file:
@@ -202,3 +208,16 @@ if operation == "save_student" or operation == "save_teacher":
 		a.writerows(data)
 
 	# Dance naked in the moonlight
+elif operation == "get_improvement":
+	dataset_teacher = create_dataset('../cache/trips/' + trip_teacher + '.csv')
+	dataset_trip_1 = create_dataset('../cache/trips/' + trip_1 + '.csv')
+	dataset_trip_2 = create_dataset('../cache/trips/' + trip_2 + '.csv')
+
+	# Create the knn model
+	clf = neighbors.KNeighborsClassifier(
+	    n_neighbors = config['knn']['neighbors'],	# No of neighbors
+	    p = config['knn']['p'],                		# p=2 Euclidean distance
+	    n_jobs = config['knn']['n_jobs']           	# Number of CPU cores used
+	)
+	
+	clf.fit(dataset_teacher['data'], dataset_teacher['target'])
