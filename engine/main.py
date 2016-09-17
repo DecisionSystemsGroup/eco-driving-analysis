@@ -219,5 +219,20 @@ elif operation == "get_improvement":
 	    p = config['knn']['p'],                		# p=2 Euclidean distance
 	    n_jobs = config['knn']['n_jobs']           	# Number of CPU cores used
 	)
-	
-	clf.fit(dataset_teacher['data'], dataset_teacher['target'])
+
+	clf.fit(
+		np.concatenate(
+			(
+				dataset_teacher['data'],
+				dataset_trip_1['data']
+			), 
+			axis=0
+		),
+		np.concatenate(
+			(
+				dataset_teacher['target'],
+				dataset_trip_1['target']
+			), 
+			axis=0
+		),
+	)
