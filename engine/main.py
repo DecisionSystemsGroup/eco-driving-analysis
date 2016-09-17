@@ -22,19 +22,21 @@ import sys
 import MySQLdb as sql
 import json
 import numpy as np
+import csv
 
 # Load Arguments
-operation = sys.argv[1] # Get the operation: get_trip
+operation = sys.argv[1] # Get the operation: save_trip, train_knn
 
-if operation == "get_trip":	# Argument types change depending on the operation
-	get_trip_from = sys.argv[2]	#Timestamp in the format "2016-01-01 14:59"
-	get_trip_to = sys.argv[3]	#Timestamp in the format "2016-01-01 14:59"
+if operation == "save_trip":	# Argument types change depending on operation
+	filename = sys.argv[2]		# A string for filename
+	get_trip_from = sys.argv[3]	# Timestamp in the format "2016-01-01 14:59"
+	get_trip_to = sys.argv[4]	# Timestamp in the format "2016-01-01 14:59"
 
 # Load configuration information
 with open('config.json') as json_data_file:
 	config = json.load(json_data_file)
 
-if operation == "get_trip":
+if operation == "save_trip":
 	# Connect to the database
 	db = sql.connect(
 		host = config['mysql']['host'],
@@ -50,7 +52,6 @@ if operation == "get_trip":
 	# or null ignore the row.
 	cur.execute(
 		"SELECT" + 
-			"`id`," +
 			"`driving_quality0`," +
 			"`driving_quality1`," +
 			"`driving_quality2`," +
@@ -130,8 +131,13 @@ if operation == "get_trip":
 	for row in cur.fetchall():
 		list_trip.append(row)
 
-	# Convert list to a numpy array
-	np_trip = np.array(list_trip)
-
 	# Close the database connection
 	db.close()
+
+	# Export it as a CSV
+	with open('../cache/trips/' + filename + '.csv', 'w') as fp:
+		a = csv.writer(fp, delimiter=',')
+		data = list_trip
+		a.writerows(data)
+
+	# Dance naked in the moonlight
