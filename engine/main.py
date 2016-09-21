@@ -26,39 +26,18 @@ import csv
 import sklearn as sk
 from sklearn import neighbors
 
-# Load Arguments
-operation = sys.argv[1] # Get the operation: save_student, train_knn
-
-if operation == "save_student" or operation == "save_teacher":	
-	filename = sys.argv[2]		# A string for filename
-	get_trip_from = sys.argv[3]	# Timestamp in the format "2016-01-01 14:59"
-	get_trip_to = sys.argv[4]	# Timestamp in the format "2016-01-01 14:59"
-elif operation == "get_improvement":
-	trip_1 = sys.argv[2]		# The filenames of csvs created previously 
-	trip_teacher = sys.argv[3]	# with the save_student operation
-	trip_2 = sys.argv[4]
-
-# Load configuration information
-with open('config.json') as json_data_file:
-	config = json.load(json_data_file)
-
 ###############
 ## FUNCTIONS ##
 ###############
 
-def create_dataset(csv_dir):
-    # Imports a csv file and returns a dictionary with the data and target to
+def create_dataset(list):
+    # Takes a list and returns a dictionary with the data and target to
     # be used in kNN
-    
-    # Load csv file into list
-    with open(csv_dir, 'rb') as f:
-        reader = csv.reader(f)
-        list_csv = list(reader)
-        
+	
     # Split list to data and target(classes)
     data = []
     target = []    
-    for row in list_csv:
+    for row in list:
         data.append(row[:24])
         target.append(row[24])
     
@@ -96,15 +75,7 @@ def merge_qualities(data):
     data_exp = np.hstack((qualities,data_rest)) # Merge qualities and the rest
     return data_exp
 
-if operation == "save_student" or operation == "save_teacher":
-	# Connect to the database
-	db = sql.connect(
-		host = config['mysql']['host'],
-		user = config['mysql']['user'],
-		passwd = config['mysql']['passwd'],
-		db = config['mysql']['db']
-	)
-
+def read_trip_from_database(trip_start, trip_stop, trip_class):
 	# Create cursor object for the execution of the needed queries
 	cur = db.cursor()
 
@@ -181,38 +152,23 @@ if operation == "save_student" or operation == "save_teacher":
 			"(`driving_quality19` != null) ||" + 
 			"(`driving_quality20` != null)" +
 		") && (" +
-			"(`time` >= '" + get_trip_from + "') && " +
-			"(`time` <= '" + get_trip_to + "')" +
+			"(`time` >= '" + trip_start + "') && " +
+			"(`time` <= '" + trip_stop + "')" +
 		")"	
 	)
 
 	# Save the object in a list
 	list_trip = []
 	for row in cur.fetchall():
-		row = list(row)	# Transform row from tuple to list, for append to work	
-		if operation == 'save_teacher':
-			row.append('tch')
-		elif operation == 'save_student':
-			row.append('std')
-		list_trip.append(row)
+		row = list(row)	# Transform row from tuple to list, for append to work
+		row[row==''] = '0'	# Change empty values to zero
+		row.append(trip_class)
+		list_trip.append(row)		
 
-	list_trip[list_trip==''] = '0'	# Change empty values to zero	
+	return list_trip
 
-	# Close the database connection
-	db.close()
 
-	# Export it as a CSV
-	with open('../cache/trips/' + filename + '.csv', 'w') as fp:
-		a = csv.writer(fp, delimiter=',')
-		data = list_trip
-		a.writerows(data)
-
-elif operation == "get_improvement":
-
-	# Load the datasets
-	dataset_teacher = create_dataset('../cache/trips/' + trip_teacher + '.csv')
-	dataset_trip_1 = create_dataset('../cache/trips/' + trip_1 + '.csv')
-	dataset_trip_2 = create_dataset('../cache/trips/' + trip_2 + '.csv')
+def get_results(dataset_trainee_1, dataset_instructor, dataset_trainee_2):
 
 	# Create the knn model
 	clf = neighbors.KNeighborsClassifier(
@@ -225,21 +181,56 @@ elif operation == "get_improvement":
 	clf.fit(
 		np.concatenate(
 			(
-				dataset_teacher['data'],
-				dataset_trip_1['data']
+				dataset_instructor['data'],
+				dataset_trainee_1['data']
 			), 
 			axis=0
 		),
 		np.concatenate(
 			(
-				dataset_teacher['target'],
-				dataset_trip_1['target']
+				dataset_instructor['target'],
+				dataset_trainee_1['target']
 			), 
 			axis=0
 		),
 	)
 
-	# Predict if trip_2 is nearest to teacher or trip_1
-	proba = clf.predict_proba(dataset_trip_2['data'])
+	# Do stuff here to compute the result
+	result = '66%'
+	return result
+	
+# Load configuration information
+with open('config.json') as json_data_file:
+	config = json.load(json_data_file)
 
-	print proba
+# Load Arguments
+trip_trainee_1_start = sys.argv[1]
+trip_trainee_1_stop = sys.argv[2]
+
+trip_instructor_start = sys.argv[3]
+trip_instructor_stop = sys.argv[4]
+
+trip_trainee_2_start = sys.argv[5]
+trip_trainee_2_stop = sys.argv[6]
+
+# Connect to the database
+db = sql.connect(
+	host = config['mysql']['host'],
+	user = config['mysql']['user'],
+	passwd = config['mysql']['passwd'],
+	db = config['mysql']['db']
+)
+
+# Load trips from the database
+trip_trainee_1 = read_trip_from_database(trip_trainee_1_start, trip_trainee_1_stop, 'trn')
+trip_instructor = read_trip_from_database(trip_instructor_start, trip_instructor_stop, 'ins')
+trip_trainee_2 = read_trip_from_database(trip_trainee_2_start, trip_trainee_2_stop, 'trn')
+
+db.close()
+
+# Create datasets from the trips
+trip_trainee_1 = create_dataset(trip_trainee_1)
+trip_instructor = create_dataset(trip_instructor)
+trip_trainee_2 = create_dataset(trip_trainee_2)
+
+print get_results(trip_trainee_1, trip_instructor, trip_trainee_2)
