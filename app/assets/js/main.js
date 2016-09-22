@@ -12,7 +12,13 @@ function hideLoader(){
 		app.init();
 	});
 }
-
+function getLoginData(){
+	return {
+		username: $('#login-username').val(),
+		password: $('#login-password').val(),
+		rememberMe: $('#login-remember-me').prop('checked')
+	};
+}
 var settings = {
 	apiUrl: 'http://eco.srv.teiste.gr/api/v1'
 }
