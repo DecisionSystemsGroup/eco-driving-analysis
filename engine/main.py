@@ -30,50 +30,50 @@ from sklearn import neighbors
 ## FUNCTIONS ##
 ###############
 
-def create_dataset(list):
-    # Takes a list and returns a dictionary with the data and target to
-    # be used in kNN
-	
-    # Split list to data and target(classes)
-    data = []
-    target = []    
-    for row in list:
-        data.append(row[:24])
-        target.append(row[24])
-    
-    # Convert lists to numpy array
-    data = np.array(data)
-    target = np.array(target)
-    
-    # Replace N/A values with 0
-    data[data==''] = '0'
-    target[target==''] = '0'
-    
-    return {'data': merge_qualities(data), 'target': target}
-    
-def merge_qualities(data):
-    # Merges the quality columns (0 - 20) into one weighted number
+def create_dataset(input_list):
+	# Takes a list and returns a dictionary with the data and target to
+	# be used in kNN
 
-    data_qual = data[:,:21] # Subset the driving quality cols
-    
-    qualities = [];
-    for row in data_qual:
-        # For each row do the sum of each col * 10 ^ a power from -10 to 10 
-        # starting from -10 for the first col and ending to 10 for the 20th            
-        merger = 0.0
-        power = -10;
-        for col in row:
-            merger += int(col) * (10 ** power)
-            power += 1   
-        qualities.append(merger)    # Save the generated num to the qual array
-    
-    data_rest = data[:,21:] # Subset maxAcc, maxBrk and Speed from the dataset
-    
-    qualities = np.array(qualities) # Transform the qualities to numpy array
-    qualities = qualities[:, None]  # Make qualities a 2D array for hstack to work
-    
-    data_exp = np.hstack((qualities,data_rest)) # Merge qualities and the rest
-    return data_exp
+	# Split list to data and target(classes)
+	data = []
+	target = []  
+	for row in input_list:
+		data.append(row[:24])
+		target.append(row[24])
+
+	# Convert lists to numpy array
+	data = np.array(data)
+	target = np.array(target)
+
+	# Replace N/A values with 0
+	data[data==''] = '0'
+	target[target==''] = '0'
+
+	return {'data': merge_qualities(data), 'target': target}
+
+def merge_qualities(data):
+	# Merges the quality columns (0 - 20) into one weighted number
+
+	data_qual = data[:,:21] # Subset the driving quality cols
+
+	qualities = [];
+	for row in data_qual:
+		# For each row do the sum of each col * 10 ^ a power from -10 to 10 
+		# starting from -10 for the first col and ending to 10 for the 20th            
+		merger = 0.0
+		power = -10;
+		for col in row:
+			merger += int(col) * (10 ** power)
+			power += 1   
+		qualities.append(merger)    # Save the generated num to the qual array
+
+	data_rest = data[:,21:] # Subset maxAcc, maxBrk and Speed from the dataset
+
+	qualities = np.array(qualities) # Transform the qualities to numpy array
+	qualities = qualities[:, None]  # Make qualities a 2D array for hstack to work
+
+	data_exp = np.hstack((qualities,data_rest)) # Merge qualities and the rest
+	return data_exp
 
 def read_trip_from_database(trip_start, trip_stop, trip_class):
 	# Create cursor object for the execution of the needed queries
@@ -162,20 +162,13 @@ def read_trip_from_database(trip_start, trip_stop, trip_class):
 	for row in cur.fetchall():
 		row = list(row)	# Transform row from tuple to list, for append to work
 		row[row==''] = '0'	# Change empty values to zero
+		row = map(float, row) # Transform strings to float nums
 		row.append(trip_class)
-		list_trip.append(row)		
-
+		list_trip.append(row)
 	return list_trip
 
 
 def get_results(dataset_trainee_1, dataset_instructor, dataset_trainee_2):
-
-	# Create the knn model
-	clf = neighbors.KNeighborsClassifier(
-	    n_neighbors = config['knn']['neighbors'],	# No of neighbors
-	    p = config['knn']['p'],                		# p=2 Euclidean distance
-	    n_jobs = config['knn']['n_jobs']           	# Number of CPU cores used
-	)
 
 	# Train the kNN
 	clf.fit(
@@ -195,9 +188,22 @@ def get_results(dataset_trainee_1, dataset_instructor, dataset_trainee_2):
 		),
 	)
 
-	# Do stuff here to compute the result
-	result = '66%'
-	return result
+	# Get a prediction
+	prediction = clf.predict(dataset_trainee_2['data'])
+
+	# Calculate percentages
+	sum_ins = 0.
+	sum_trn = 0.
+	for knn_class in prediction:
+		if knn_class == 'ins':
+			sum_ins += 1.
+		elif knn_class == 'trn':
+			sum_trn += 1.
+
+	return {
+		'ins': sum_ins / (sum_ins + sum_trn),
+		'trn': sum_trn / (sum_ins + sum_trn)
+	}
 	
 # Load configuration information
 with open('config.json') as json_data_file:
@@ -221,6 +227,13 @@ db = sql.connect(
 	db = config['mysql']['db']
 )
 
+# Create the knn model
+clf = neighbors.KNeighborsClassifier(
+	n_neighbors = int(config['knn']['neighbors']),	# No of neighbors
+	p = int(config['knn']['p']),                	# p=2 Euclidean distance
+	n_jobs = int(config['knn']['n_jobs'])           # Number of CPU cores used
+)
+
 # Load trips from the database
 trip_trainee_1 = read_trip_from_database(trip_trainee_1_start, trip_trainee_1_stop, 'trn')
 trip_instructor = read_trip_from_database(trip_instructor_start, trip_instructor_stop, 'ins')
@@ -233,4 +246,9 @@ trip_trainee_1 = create_dataset(trip_trainee_1)
 trip_instructor = create_dataset(trip_instructor)
 trip_trainee_2 = create_dataset(trip_trainee_2)
 
-print get_results(trip_trainee_1, trip_instructor, trip_trainee_2)
+# Get Results
+results = get_results(trip_trainee_1, trip_instructor, trip_trainee_2)
+
+# Print Results
+print "Instructor: {:3.2f}".format(results['ins']*100)+"%" 
+print "Trainee: {:3.2f}".format(results['trn']*100)+"%"
