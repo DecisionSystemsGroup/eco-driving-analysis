@@ -21,6 +21,7 @@ var app = (function(){
 	function showLogin(){
 		$('#app-wrapper').hide();
 		$('#login-wrapper').show();
+		$('#login-username').focus();
 	}
 
 	function showApp(){
