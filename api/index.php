@@ -1,6 +1,16 @@
 <?php
 	require 'vendor/autoload.php';
+	require ('vendor/palanik/corsslim/CorsSlim.php');
+	
 	$app = new \Slim\Slim();
+	
+	$corsOptions = array(
+		"origin" => "*",
+		"exposeHeaders" => array("token"),
+		"maxAge" => 86400,
+		"allowMethods" => array("POST, GET, OPTIONS")
+	);
+	$app->add(new \CorsSlim\CorsSlim());
 	
 	$app->response->headers->set('Content-Type', 'application/json;charset=utf-8');
 	
