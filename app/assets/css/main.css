@@ -5,3 +5,8 @@
 .top-panel{
 	display: none;
 }
+
+#login-fail-msg{
+	display: none;
+	color: crimson;
+}

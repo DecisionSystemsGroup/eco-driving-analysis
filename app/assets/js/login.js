@@ -9,7 +9,8 @@ var login = (function(){
 	function _subscribe(){
 		_mediator.on('login-submit', tryLogin);
 		_mediator.on('login-success', _storeToken);
-	};
+		_mediator.on('login-fail', _loginFailed);
+	}
 	
 	function isLogged() {
 		if(window.localStorage.logged||window.sessionStorage.logged){
@@ -50,6 +51,10 @@ var login = (function(){
 		window.sessionStorage.logged = true;
 		window.sessionStorage.token = response.token;
 		_mediator.trigger('login-finished');
+	}
+	
+	function _loginFailed(response){
+		$('#login-fail-msg').show().text(response.error);
 	}
 	
 	return {

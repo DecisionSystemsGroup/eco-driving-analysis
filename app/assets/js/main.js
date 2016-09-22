@@ -3,6 +3,7 @@ $(document).ready(function(){
 	login.setMediator(mediator);
 	app.setMediator(mediator);
 	api.setMediator(mediator);
+	api.setApiUrl(settings.apiUrl);
 });
 
 function hideLoader(){
@@ -10,6 +11,10 @@ function hideLoader(){
 	$('.after-ready').show(function(){
 		app.init();
 	});
+}
+
+var settings = {
+	apiUrl: 'http://eco.srv.teiste.gr/api/v1'
 }
 
 var mediator = {
