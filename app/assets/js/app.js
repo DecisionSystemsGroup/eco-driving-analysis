@@ -16,6 +16,9 @@ var app = (function(){
 			case 'login-finished':
 				loginFinished(data);
 				break;
+			case 'logout':
+				reset();
+				break;
 		}
 	}
 	
@@ -30,12 +33,11 @@ var app = (function(){
 
 	function showLogin(){
 		$('#app-wrapper').hide();
-		$('#login-wrapper').show();
-		$('#login-username').focus();
+		login.show();
 	}
 
 	function showApp(){
-		$('#login-wrapper').hide();
+		login.hide();
 		$('#app-wrapper').show();
 		initPanels();
 	}
@@ -50,7 +52,7 @@ var app = (function(){
 	}
 	
 	function loginFinished(){
-		 showApp();
+		showApp();
 	}
 	
 	return {

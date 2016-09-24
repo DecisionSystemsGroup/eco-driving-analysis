@@ -19,14 +19,14 @@
 				</div>
 			</div>
 			<div class="after-ready" style="display: none;">
-				<div class="top-panel col-sm-2 col-sm-offset-5" id="login-wrapper">
+				<div class="top-panel col-sm-2 col-sm-offset-5 login-wrapper">
 					<h3 class="text-center">Login</h3>
-					<input type="text" class="form-control" placeholder="Username" title="Username" id="login-username">
-					<input type="password" class="form-control" placeholder="Password" title="Password" id="login-password">
-					<label><input value="remember-me" type="checkbox" id="login-remember-me"> Remember me</label>
-					<div id="login-fail-msg"></div>
+					<input type="text" class="form-control username" placeholder="Username" title="Username">
+					<input type="password" class="form-control password" placeholder="Password" title="Password">
+					<label><input value="remember-me" type="checkbox" class="remember-me"> Remember me</label>
+					<div class="fail-msg"></div>
 					<div class="col-xs-12 text-center">
-						<input type="button" class="btn btn-primary" value="Login" id="login-submit">
+						<input type="button" class="btn btn-primary submit" value="Login">
 					</div>
 				</div>
 				<div class="top-panel" id="app-wrapper">
@@ -64,7 +64,7 @@
 							</div>
 						</div>
 					</div>
-					<input type="button" class="btn btn-danger" value="Logout" id="logout">
+					<input type="button" class="btn btn-danger logout" value="Logout">
 				</div>
 				</div>
 			</div>

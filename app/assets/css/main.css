@@ -8,7 +8,7 @@
 	margin-bottom: 10px;
 }
 
-#login-fail-msg, #trainee-submit-fail-msg{
+.fail-msg, #trainee-submit-fail-msg{
 	display: none;
 	color: crimson;
 }

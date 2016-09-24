@@ -8,8 +8,7 @@ $(document).ready(function(){
 	api.init(apiOptions);
 	
 	var loginOptions = {
-		mediator: app.trigger,
-		id: 'login-wrapper'
+		mediator: app.trigger
 	};
 	login.init(loginOptions);
 });
@@ -20,13 +19,7 @@ function hideLoader(){
 		app.init();
 	});
 }
-function getLoginData(){
-	return {
-		username: $('#login-username').val(),
-		password: $('#login-password').val(),
-		rememberMe: $('#login-remember-me').prop('checked')
-	};
-}
+
 var settings = {
 	apiUrl: 'http://eco.srv.teiste.gr/api/v1'
 }
