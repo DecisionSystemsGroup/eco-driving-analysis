@@ -1,6 +1,7 @@
 var app = (function(){	
-	var _mediator;
-	
+	var _mediator,
+		firstPanelId = 'trainee-info';
+		
 	function setMediator(mediator){
 		_mediator = mediator;
 		_subscribe();
@@ -15,6 +16,7 @@ var app = (function(){
 			showLogin();
 		} else {
 			showApp();
+			initPanels();
 		}
 	}
 
@@ -27,6 +29,10 @@ var app = (function(){
 	function showApp(){
 		$('#login-wrapper').hide();
 		$('#app-wrapper').show();
+	}
+	
+	function initPanels(){
+		$('.app-panel#'+firstPanelId).show();
 	}
 
 	function reset(){

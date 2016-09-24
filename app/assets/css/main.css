@@ -4,9 +4,19 @@
 
 .top-panel{
 	display: none;
+	margin-top: 10px;
+	margin-bottom: 10px;
 }
 
-#login-fail-msg{
+#login-fail-msg, #trainee-submit-fail-msg{
 	display: none;
 	color: crimson;
+}
+
+.app-panel{
+	display: none;
+}
+
+#trainee-info input{
+	margin-bottom: 5px;
 }
