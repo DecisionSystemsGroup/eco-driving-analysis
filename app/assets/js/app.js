@@ -1,6 +1,11 @@
-var app = (function(){	
-	var firstPanelId = 'trainee-info';
-		
+var app = (function(){
+	
+	var _appWrapper = $('#app-wrapper'),
+		settings = {
+			apiUrl: 'http://eco.srv.teiste.gr/api/v1',
+			firstPanelId: 'trainee-info'
+		};
+	
 	function trigger(evt, data){
 		switch(evt){
 			case 'login-submit':
@@ -23,27 +28,45 @@ var app = (function(){
 	}
 	
 	function init(){
+		var apiOptions = {
+			mediator: app.trigger,
+			apiUrl: settings.apiUrl
+		};
+		api.init(apiOptions);
+		
+		var loginOptions = {
+			mediator: app.trigger
+		};
+		login.init(loginOptions);
+		
 		if(!login.isLogged()){
 			showLogin();
 		} else {
 			showApp();
 			initPanels();
 		}
+		
+		hideLoader();
 	}
-
+	
+	function hideLoader(){
+		$('.before-ready').hide();
+		$('.after-ready').show();
+	}
+	
 	function showLogin(){
-		$('#app-wrapper').hide();
+		_appWrapper.hide();
 		login.show();
 	}
 
 	function showApp(){
 		login.hide();
-		$('#app-wrapper').show();
+		_appWrapper.show();
 		initPanels();
 	}
 	
 	function initPanels(){
-		$('.app-panel#'+firstPanelId).show();
+		$('.app-panel#'+settings.firstPanelId).show();
 	}
 
 	function reset(){
