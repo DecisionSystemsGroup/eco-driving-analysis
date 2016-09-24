@@ -1,12 +1,17 @@
 $(document).ready(function(){
 	hideLoader();
-	login.setMediator(app.trigger);
 	
 	var apiOptions = {
 		mediator: app.trigger,
 		apiUrl: settings.apiUrl
 	};
 	api.init(apiOptions);
+	
+	var loginOptions = {
+		mediator: app.trigger,
+		id: 'login-wrapper'
+	};
+	login.init(loginOptions);
 });
 
 function hideLoader(){

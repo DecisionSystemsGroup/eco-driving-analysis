@@ -1,8 +1,11 @@
 var login = (function(){	
-	var _trigger;
+	var _trigger,
+		loginWrapperId;
 	
-	function setMediator(mediator){
-		_trigger = mediator;
+	function init(options){
+		_trigger = options.mediator;
+		_loginWrapperId = options.id;
+
 	}
 	
 	function isLogged(){
@@ -53,7 +56,7 @@ var login = (function(){
 	}
 	
 	return {
-		setMediator: setMediator,
+		init: init,
 		isLogged: isLogged,
 		logout: logout,
 		storeToken: storeToken,
