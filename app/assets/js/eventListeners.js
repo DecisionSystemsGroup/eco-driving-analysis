@@ -5,13 +5,13 @@ $(document).ready(function(){
 function fireListeners(){
 	$('#login-submit').on('click', function(){
 		var data = getLoginData();
-		mediator.trigger('login-submit', data);
+		app.trigger('login-submit', data);
 	});
 	
-	$('#login-wrapper input').on('keypress', function (e) {	//login with enter
+	$('#login-wrapper input').on('keypress', function (e){	//login with enter
 		if (e.which == 13) {
 			var data = getLoginData();
-			mediator.trigger('login-submit', data);
+			app.trigger('login-submit', data);
 		}
 	});
 	

@@ -1,18 +1,26 @@
 var app = (function(){	
-	var _mediator,
-		firstPanelId = 'trainee-info';
+	var firstPanelId = 'trainee-info';
 		
-	function setMediator(mediator){
-		_mediator = mediator;
-		_subscribe();
+	function trigger(evt, data){
+		switch(evt){
+			case 'login-submit':
+				api.authenticate(data);
+				break;
+			case 'auth-success':
+				login.storeToken(data);
+				login.resetLoginForm(data);
+				break;
+			case 'auth-fail':
+				login.authFailed(data);
+				break;
+			case 'login-finished':
+				loginFinished(data);
+				break;
+		}
 	}
 	
-	function _subscribe(){
-		_mediator.on('login-finished', _loginFinished);
-	};
-	
 	function init(){
-		if(!login.isLogged()) {
+		if(!login.isLogged()){
 			showLogin();
 		} else {
 			showApp();
@@ -29,6 +37,7 @@ var app = (function(){
 	function showApp(){
 		$('#login-wrapper').hide();
 		$('#app-wrapper').show();
+		initPanels();
 	}
 	
 	function initPanels(){
@@ -40,12 +49,12 @@ var app = (function(){
 		showLogin();
 	}
 	
-	function _loginFinished(){
+	function loginFinished(){
 		 showApp();
 	}
 	
 	return {
-		setMediator: setMediator,
+		trigger: trigger,
 		init: init,
 		reset: reset
 	};

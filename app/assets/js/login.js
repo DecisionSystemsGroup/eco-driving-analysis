@@ -1,16 +1,8 @@
 var login = (function(){	
-	var _mediator;
+	var _trigger;
 	
 	function setMediator(mediator){
-		_mediator = mediator;
-		_subscribe();
-	}
-	
-	function _subscribe(){
-		_mediator.on('login-submit', tryLogin);
-		_mediator.on('login-success', _storeToken);
-		_mediator.on('login-success', _resetLoginForm);
-		_mediator.on('login-fail', _loginFailed);
+		_trigger = mediator;
 	}
 	
 	function isLogged(){
@@ -27,8 +19,8 @@ var login = (function(){
 	}
 	
 	function copyLocalStorageToSessionStorage(){
-		for (var index in window.localStorage) {
-			if (!window.localStorage.hasOwnProperty(index)) {
+		for (var index in window.localStorage){
+			if (!window.localStorage.hasOwnProperty(index)){
 				continue;
 			}
 			window.sessionStorage[index] = window.localStorage[index];
@@ -40,27 +32,23 @@ var login = (function(){
 		sessionStorage.clear();
 	}
 	
-	function tryLogin(data){
-		_mediator.trigger('login-try', data);
-	}
-	
-	function _storeToken(response){
+	function storeToken(response){
 		if(response.rememberMe){
 			window.localStorage.logged = true;
 			window.localStorage.token = response.token;
 		}
 		window.sessionStorage.logged = true;
 		window.sessionStorage.token = response.token;
-		_mediator.trigger('login-finished');
+		_trigger('login-finished');
 	}
 	
-	function _resetLoginForm(){
+	function resetLoginForm(){
 		$('#login-username').val('');
 		$('#login-password').val('');
 		$('#login-fail-msg').hide().text('');
 	}
 	
-	function _loginFailed(response){
+	function _displayLoginFailMSG(response){
 		$('#login-fail-msg').show().text(response.error);
 	}
 	
@@ -68,6 +56,8 @@ var login = (function(){
 		setMediator: setMediator,
 		isLogged: isLogged,
 		logout: logout,
-		tryLogin: tryLogin
+		storeToken: storeToken,
+		resetLoginForm: resetLoginForm,
+		authFailed: _displayLoginFailMSG
 	};
 })();
