@@ -1,8 +1,12 @@
 $(document).ready(function(){
 	hideLoader();
 	login.setMediator(app.trigger);
-	api.setMediator(app.trigger);
-	api.setApiUrl(settings.apiUrl);
+	
+	var apiOptions = {
+		mediator: app.trigger,
+		apiUrl: settings.apiUrl
+	};
+	api.init(apiOptions);
 });
 
 function hideLoader(){

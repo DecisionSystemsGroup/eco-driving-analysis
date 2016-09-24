@@ -1,13 +1,10 @@
 var api = (function(){
-	var _trigger;
-	var _apiUrl;
+	var _trigger,
+		_apiUrl;
 	
-	function setMediator(mediator){
-		_trigger = mediator;
-	}
-	
-	function setApiUrl(apiUrl){
-		_apiUrl = apiUrl;
+	function init(options){
+		_trigger = options.mediator;
+		_apiUrl = options.apiUrl;
 	}
 
 	function authenticate(data){
@@ -29,8 +26,7 @@ var api = (function(){
 	}
 
 	return {
-		setMediator: setMediator,
-		setApiUrl: setApiUrl,
+		init: init,
 		authenticate: authenticate
 	};
 })();
