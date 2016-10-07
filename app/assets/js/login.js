@@ -15,7 +15,7 @@ var login = (function(){
 		
 		_usernameElement = options.usernameElement || _loginWrapper.find('.username');
 		_passwordElement = options.passwordElement || _loginWrapper.find('.password');
-		_rememberMeElement = options.rememberMeElement || _loginWrapper.find('.rememberMe');
+		_rememberMeElement = options.rememberMeElement || _loginWrapper.find('.remember-me');
 		_failMsgElement = options.failMsgElement || _loginWrapper.find('.fail-msg');
 		_submitElement = options.submitElement || _loginWrapper.find('.submit');
 		_logoutElement = options.logoutElement || $('.logout');
