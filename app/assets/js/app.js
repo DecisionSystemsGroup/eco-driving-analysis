@@ -33,21 +33,18 @@ var app = (function(){
 	}
 	
 	function init(){
-		var apiOptions = {
+		api.init({
 			mediator: app.trigger,
 			apiUrl: settings.apiUrl
-		};
-		api.init(apiOptions);
+		});
 		
-		var loginOptions = {
+		login.init({
 			mediator: app.trigger
-		};
-		login.init(loginOptions);
+		});
 		
-		var drivingSessionOptions = {
+		drivingSession.init({
 			mediator: app.trigger
-		};
-		drivingSession.init(drivingSessionOptions);
+		});
 		
 		if(!login.isLogged()){
 			showLogin();
