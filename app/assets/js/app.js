@@ -3,10 +3,15 @@ var app = (function(){
 	var _appWrapper = $('#app-wrapper'),
 		settings = {
 			apiUrl: 'http://eco.srv.teiste.gr/api/v1',
-			firstPanelId: 'trainee-info'
+			firstPanelId: 'trainee-info',
+			debugging: true
 		};
 	
 	function trigger(evt, data){
+		if(settings.debugging){
+			console.log("Event triggered: "+evt);
+		}
+		
 		switch(evt){
 			case 'login-submit':
 				api.authenticate(data);
