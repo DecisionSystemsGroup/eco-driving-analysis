@@ -44,6 +44,11 @@ var app = (function(){
 		};
 		login.init(loginOptions);
 		
+		var drivingSessionOptions = {
+			mediator: app.trigger
+		};
+		drivingSession.init(drivingSessionOptions);
+		
 		if(!login.isLogged()){
 			showLogin();
 		} else {
