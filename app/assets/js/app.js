@@ -19,7 +19,7 @@ var app = (function(){
 				login.authFailed(data);
 				break;
 			case 'login-finished':
-				loginFinished(data);
+				showApp(data);
 				break;
 			case 'logout':
 				reset();
@@ -72,10 +72,6 @@ var app = (function(){
 	function reset(){
 		login.logout();
 		showLogin();
-	}
-	
-	function loginFinished(){
-		showApp();
 	}
 	
 	return {
