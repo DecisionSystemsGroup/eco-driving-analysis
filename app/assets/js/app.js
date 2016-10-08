@@ -32,6 +32,7 @@ var app = (function(){
 			case 'trainee-info-submit':
 				drivingSession.update('traineeInfo', data);
 				hidePanels();
+                showTripControls(1);    //show the controls for the first trip
 				showTripsPanel();
 				break;
 		}
@@ -92,9 +93,27 @@ var app = (function(){
 	}
 	
 	function initPanels(){
-		$('.app-panel#'+settings.firstPanelId).show();
+		var lastStep = drivingSession.lastStep();
+        
+		if( lastStep === false ){ //there are no data at all
+			$('.app-panel#trainee-info').show();
+		} else if( lastStep === true ){   //the session is complete
+			$('.app-panel#results').show();
+		} else if( lastStep === 'traineeInfo'){   //only the trainee data are stored
+            showTripControls(1);
+			$('.app-panel#trips-timestamps').show();
+		} else if( lastStep.indexOf('trip') != -1 ){  //some of the trips are complete
+            var tripId = lastStep.split('trip').pop();
+            tripId = parseInt(tripId)+1;    //Show the next one
+            showTripControls(tripId);
+			$('.app-panel#trips-timestamps').show();
+		}
 	}
-
+    
+    function showTripControls(id){
+        $('.trip-timestamps-container').hide().filter("[data-trip='" + id + "']").show();
+    }
+    
 	function hidePanels(){
 		$('.app-panel').hide();
 	}
