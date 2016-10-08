@@ -48,11 +48,27 @@ var drivingSession = (function(){
 		_data = JSON.parse(_storage.drivingSession);
 	}
 	
+	//Returns false if the drivingSession is empty, true if it is complete or the last complete step
+	function lastStep(){
+		if( !_data.traineeInfo ){
+			return false;
+		} else if( !_data.trip1 ){
+			return 'traineeInfo';
+		} else if( !_data.trip2 ){
+			return 'trip1';
+		} else if( !_data.trip3 ){
+			return 'trip2';
+		} else {
+			return true;
+		}
+	}
+	
 	return {
 		init: init,
 		isActive: isActive,
 		clear: clear,
 		getData: getData,
-		update: update
+		update: update,
+		lastStep: lastStep
 	};
 })();
