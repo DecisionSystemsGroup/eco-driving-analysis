@@ -9,7 +9,7 @@ var app = (function(){
 	
 	function trigger(evt, data){
 		if(settings.debugging){
-			console.log("Event triggered: "+evt);
+			console.log("Event triggered: "+evt, data);
 		}
 		
 		switch(evt){
@@ -28,6 +28,9 @@ var app = (function(){
 				break;
 			case 'logout':
 				reset();
+				break;
+			case 'trainee-info-submit':
+				drivingSession.update('traineeInfo', data);
 				break;
 		}
 	}
@@ -54,6 +57,21 @@ var app = (function(){
 		}
 		
 		hideLoader();
+		_fireEventListeners();
+	}
+	function _fireEventListeners(){
+		$('#trainee-info-submit').on('click', function(){
+			var form = $('#trainee-form'),
+				data = {
+					name: form.find('#trainee-name').val(),
+					surname: form.find('#trainee-surname').val(),
+					company: form.find('#trainee-company').val(),
+					birthday: form.find('#trainee-birthday').val(),
+					license: form.find('#trainee-license').val()
+				};
+
+			trigger('trainee-info-submit', data);
+		});
 	}
 	
 	function hideLoader(){
