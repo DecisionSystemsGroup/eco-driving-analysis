@@ -31,6 +31,8 @@ var app = (function(){
 				break;
 			case 'trainee-info-submit':
 				drivingSession.update('traineeInfo', data);
+				hidePanels();
+				showTripsPanel();
 				break;
 		}
 	}
@@ -92,6 +94,14 @@ var app = (function(){
 	
 	function initPanels(){
 		$('.app-panel#'+settings.firstPanelId).show();
+	}
+
+	function hidePanels(){
+		$('.app-panel').hide();
+	}
+
+	function showTripsPanel(){
+		$('.app-panel#trips-timestamps').show();
 	}
 
 	function reset(){
