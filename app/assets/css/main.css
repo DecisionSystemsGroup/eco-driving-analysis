@@ -20,3 +20,11 @@
 #trainee-info input{
 	margin-bottom: 5px;
 }
+
+.trip-controls-start{
+	margin-bottom: 10px;
+}
+
+.trip-timestamps-container, .trip-controls-stop{
+	display: none;
+}
