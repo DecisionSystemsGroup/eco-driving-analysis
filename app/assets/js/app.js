@@ -89,7 +89,6 @@ var app = (function(){
 	function showApp(){
 		login.hide();
 		_appWrapper.show();
-		initPanels();
 	}
 	
 	function initPanels(){
