@@ -22,6 +22,12 @@ var drivingSession = (function(){
 	
 	function clear(){
 		delete _storage.drivingSession;
+		_data = {
+			traineeInfo: undefined,
+			trip1:undefined,
+			trip2:undefined,
+			trip3:undefined
+		};
 		_trigger('session-cleared');
 	}
 	
