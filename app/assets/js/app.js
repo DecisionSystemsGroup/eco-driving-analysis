@@ -24,6 +24,7 @@ var app = (function(){
 				login.authFailed(data);
 				break;
 			case 'login-finished':
+				initPanels();
 				showApp(data);
 				break;
 			case 'logout':
@@ -94,7 +95,8 @@ var app = (function(){
 	
 	function initPanels(){
 		var lastStep = drivingSession.lastStep();
-        
+        $('.app-panel').hide();		
+
 		if( lastStep === false ){ //there are no data at all
 			$('.app-panel#trainee-info').show();
 		} else if( lastStep === true ){   //the session is complete
@@ -124,6 +126,7 @@ var app = (function(){
 
 	function reset(){
 		login.logout();
+		drivingSession.clear();
 		showLogin();
 	}
 	
