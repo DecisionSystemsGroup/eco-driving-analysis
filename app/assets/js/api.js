@@ -25,8 +25,29 @@ var api = (function(){
 		});
 	}
 
+	function createDrivingSession(data){
+		$.ajax({
+			type: 'POST',
+			url: _apiUrl+"/session/",
+			headers: {
+				"Accept":"application/json"
+			},
+			data : data,
+			success: function (response){
+				_trigger('new-session-success', response);
+			},
+			error: function (response){
+				_trigger('new-session-fail', response.responseJSON);
+			},
+			complete: function (){
+				_trigger('new-session-after');
+			}
+		});
+	}
+	
 	return {
 		init: init,
-		authenticate: authenticate
+		authenticate: authenticate,
+		createDrivingSession: createDrivingSession
 	};
 })();
