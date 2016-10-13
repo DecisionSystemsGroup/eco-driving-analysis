@@ -5,7 +5,11 @@ var app = (function(){
 			apiUrl: 'http://eco.srv.teiste.gr/api/v1',
 			firstPanelId: 'trainee-info',
 			debugging: true
-		};
+		},
+        tempTrip = {
+            start: undefined,
+            stop: undefined
+        };
 	
 	function trigger(evt, data){
 		if(settings.debugging){
@@ -36,6 +40,21 @@ var app = (function(){
                 showTripControls(1);    //show the controls for the first trip
 				showTripsPanel();
 				break;
+			case 'trip-started':
+				updateCurrentTrip(data);
+				showTripStop(data);
+				break;
+			case 'trip-stopped':
+				updateCurrentTrip(data);
+				break;
+			case 'trip-complete':
+				drivingSession.update('trip'+data.tripId, data.timestamps);
+				if(data.tripId<3){
+					showNextTrip(data)
+				} else {
+					//api call goes here
+				}
+				break;
 		}
 	}
 	
@@ -64,6 +83,7 @@ var app = (function(){
 		_fireEventListeners();
 	}
 	function _fireEventListeners(){
+		//trainee info
 		$('#trainee-info-submit').on('click', function(){
 			var form = $('#trainee-form'),
 				data = {
@@ -76,6 +96,24 @@ var app = (function(){
 
 			trigger('trainee-info-submit', data);
 		});
+        
+		//trip start
+        $('.trip-controls-start>.btn').on('click', function(){
+            var data = {
+				tripId: $(this).closest('.trip-timestamps-container').data('trip'),
+                start: new Date().getTime()
+            }
+            trigger('trip-started', data);
+        });
+		
+		//trip stop
+        $('.trip-controls-stop>.btn').on('click', function(){
+            var data = {
+				tripId: $(this).closest('.trip-timestamps-container').data('trip'),
+                stop: new Date().getTime()
+            }
+            trigger('trip-stopped', data);
+        });
 	}
 	
 	function hideLoader(){
@@ -128,6 +166,34 @@ var app = (function(){
 		login.logout();
 		drivingSession.clear();
 		showLogin();
+	}
+	
+	function updateCurrentTrip(tripData){
+		if(tripData.stop){
+			tempTrip.stop = tripData.stop;
+			
+			data = {
+				tripId: tripData.tripId,
+				timestamps: tempTrip
+			}
+			trigger('trip-complete', data);
+		} else {
+			tempTrip.start = tripData.start;
+		}
+	}
+	
+	function showTripStop(tripData){
+		var tripWrapper = $('.trip-timestamps-container[data-trip="'+tripData.tripId+'"]');
+		tripWrapper.find('.trip-controls-start').hide();
+		tripWrapper.find('.trip-controls-stop').fadeIn();
+	}
+	
+	function showNextTrip(data){
+		if(data.tripId<3){
+			$('.trip-timestamps-container[data-trip="'+data.tripId+'"]').fadeOut(function(){
+				$('.trip-timestamps-container[data-trip="'+(data.tripId+1)+'"]').fadeIn();
+			});
+		}
 	}
 	
 	return {
