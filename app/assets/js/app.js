@@ -24,7 +24,6 @@ var app = (function(){
 				login.authFailed(data);
 				break;
 			case 'login-finished':
-				initPanels();
 				showApp(data);
 				break;
 			case 'logout':
@@ -125,7 +124,6 @@ var app = (function(){
 
 	function reset(){
 		login.logout();
-		drivingSession.clear();
 		showLogin();
 	}
 	
