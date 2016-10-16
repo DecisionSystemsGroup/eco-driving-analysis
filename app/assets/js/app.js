@@ -67,6 +67,9 @@ var app = (function(){
 			case 'new-session-after':
 				showResultsContainer();
 				break;
+			case 'before-reload-session-complete':
+				drivingSession.clear();
+				break;
 		}
 	}
 	
@@ -149,8 +152,9 @@ var app = (function(){
 
 		if( lastStep === false ){ //there are no data at all
 			$('.app-panel#trainee-info').show();
-		} else if( lastStep === true ){   //the session is complete
-			showResultsPanel(false);
+		} else if( lastStep === true ){   //the last session before refresh was complete
+			trigger('before-reload-session-complete');
+			$('.app-panel#trainee-info').show();
 		} else if( lastStep === 'traineeInfo'){   //only the trainee data are stored
             showTripControls(1);
 			$('.app-panel#trips-timestamps').show();
