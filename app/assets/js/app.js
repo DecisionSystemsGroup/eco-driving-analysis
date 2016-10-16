@@ -52,8 +52,19 @@ var app = (function(){
 				if(data.tripId<3){
 					showNextTrip(data)
 				} else {
-					//api call goes here
+					hidePanels();
+					showResultsPanel(true);
+					api.createDrivingSession(drivingSession.getData());
 				}
+				break;
+			case 'new-session-success':
+				renderResultsSuccess(data);
+				break;
+			case 'new-session-faill':
+				renderResultsFaill(data);
+				break;
+			case 'new-session-after':
+				showResultsContainer();
 				break;
 		}
 	}
@@ -138,7 +149,7 @@ var app = (function(){
 		if( lastStep === false ){ //there are no data at all
 			$('.app-panel#trainee-info').show();
 		} else if( lastStep === true ){   //the session is complete
-			$('.app-panel#results').show();
+			showResultsPanel(false);
 		} else if( lastStep === 'traineeInfo'){   //only the trainee data are stored
             showTripControls(1);
 			$('.app-panel#trips-timestamps').show();
@@ -194,6 +205,29 @@ var app = (function(){
 				$('.trip-timestamps-container[data-trip="'+(data.tripId+1)+'"]').fadeIn();
 			});
 		}
+	}
+	
+	function showResultsPanel(loader){
+		var resultsWrapper = $('.app-panel#results');
+		resultsWrapper.find('.panel-body').children().hide();
+		if(loader){
+			resultsWrapper.find('.loader-container').show();
+		} else {
+			resultsWrapper.find('.results-container').show();
+		}
+		resultsWrapper.show();
+	}
+	
+	function renderResultsSuccess(data){
+	}
+	
+	function renderResultsFaill(data){
+	}
+	
+	function showResultsContainer(){
+		var resultsWrapper = $('.app-panel#results');
+		resultsWrapper.find('.loader-container').hide();
+		resultsWrapper.find('.results-container').show();
 	}
 	
 	return {
