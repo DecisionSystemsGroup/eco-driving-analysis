@@ -9,7 +9,8 @@ var app = (function(){
         tempTrip = {
             start: undefined,
             stop: undefined
-        };
+        },
+		resultsChart = undefined;
 	
 	function trigger(evt, data){
 		if(settings.debugging){
@@ -219,6 +220,34 @@ var app = (function(){
 	}
 	
 	function renderResultsSuccess(data){
+		if(resultsChart !== undefined){
+			resultsChart.destroy();
+		}
+		var chartData = {
+			labels: ['Instructor', 'Trainee'],
+			datasets: [{
+				data: [data.results.instructor, data.results.trainee],
+				backgroundColor:["#36A2EB", "#FF6384"],
+				hoverBackgroundColor:["#36A2EB", "#FF6384"]
+			}]
+		};
+		var ctx = document.getElementById('results-chart');
+		resultsChart = new Chart(ctx,{
+			type: 'doughnut',
+			data: chartData,
+			options: {
+				title: {
+					display: true,
+					fontSize: 25,
+					text: 'Some Title'
+				},
+				animation: {
+					duration: 1500,
+					animateScale: true,
+					animateRotate: true
+				}
+			}
+		});
 	}
 	
 	function renderResultsFaill(data){
