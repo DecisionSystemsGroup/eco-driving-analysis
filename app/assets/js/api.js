@@ -34,13 +34,12 @@ var api = (function(){
 			},
 			data : data,
 			success: function (response){
+				_trigger('new-session-after');
 				_trigger('new-session-success', response);
 			},
 			error: function (response){
-				_trigger('new-session-fail', response.responseJSON);
-			},
-			complete: function (){
 				_trigger('new-session-after');
+				_trigger('new-session-fail', response.responseJSON);
 			}
 		});
 	}
