@@ -7,11 +7,11 @@
 		<link rel="stylesheet" type="text/css" href="./vendor/bootstrap-3.3.7-dist/css/bootstrap.min.css">
 		<link rel="stylesheet" type="text/css" href="./vendor/bootstrap-3.3.7-dist/css/bootstrap-theme.min.css">
 		<link rel="stylesheet" type="text/css" href="./vendor/font-awesome-4.6.3/css/font-awesome.min.css">
-		
+
 		<!-- Custom CSS -->
-		<link rel="stylesheet" type="text/css" href="./assets/css/main.css">
+		<link rel="stylesheet" type="text/css" href="./assets/css/main.min.css">
 	</head>
-	<body>
+	<body class="login">
 		<div class="container-fluid">
 			<div class="before-ready">
 				<div class="loader-container col-xs-12 text-center">
@@ -19,19 +19,54 @@
 				</div>
 			</div>
 			<div class="after-ready" style="display: none;">
-				<div class="top-panel col-sm-2 col-sm-offset-5 login-wrapper">
-					<h3 class="text-center">Login</h3>
-					<input type="text" class="form-control username" placeholder="Username" title="Username">
-					<input type="password" class="form-control password" placeholder="Password" title="Password">
-					<label><input value="remember-me" type="checkbox" class="remember-me"> Remember me</label>
-					<div class="fail-msg"></div>
-					<div class="col-xs-12 text-center">
-						<input type="button" class="btn btn-primary submit" value="Login">
+				<div class="top-panel col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4 login-wrapper">
+					<div class="jumbotron">
+						<h2 class="text-center">Login to Dashboard</h2>
+						<div class="form-group">
+							<label for="username">Username:</label>
+							<input id="username" type="text" class="form-control username input-lg" placeholder="" title="Username">
+						</div>
+						<div class="form-group">
+							<label for="password">Password:</label>
+							<input id="password" type="password" class="form-control password input-lg" placeholder="" title="Password">
+						</div>
+						<div class="form-group">
+							<label><input value="remember-me" type="checkbox" class="remember-me"> Remember me</label>
+						</div>
+						<div class="alert alert-danger fail-msg" role="alert"></div>
+						<div class="col-sm-8 col-sm-offset-2 text-center">
+							<input type="button" class="btn btn-success btn-lg btn-block submit" value="Login">
+						</div>
 					</div>
 				</div>
 				<div class="top-panel" id="app-wrapper">
-					<div class="app-panel col-sm-6 col-sm-offset-3 col-xs-12" id="trainee-info">
-						<div class="panel panel-primary">
+					<nav class="navbar navbar-default navbar-fixed-top">
+					  <div class="container">
+					    <!-- Brand and toggle get grouped for better mobile display -->
+					    <div class="navbar-header">
+					      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+					        <span class="sr-only">Toggle navigation</span>
+					        <span class="icon-bar"></span>
+					        <span class="icon-bar"></span>
+					        <span class="icon-bar"></span>
+					      </button>
+					    </div>
+
+					    <!-- Collect the nav links, forms, and other content for toggling -->
+					    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+					      <ul class="nav navbar-nav">
+					        <li><a href="#">Edit Instructor</a></li>
+					        <li><a href="#">Edit Trainee</a></li>
+					      </ul>
+					      <ul class="nav navbar-nav navbar-right">
+					        <input id="nav-logout" type="button" class="btn btn-danger logout" value="Logout">
+					      </ul>
+					    </div><!-- /.navbar-collapse -->
+					  </div><!-- /.container-fluid -->
+					</nav>
+					<div class="app-panel" id="trainee-info">
+						<div class="col-md-6 col-md-offset-3">
+							<div class="panel panel-primary">
 							<div class="panel-heading text-center">Trainee Info</div>
 							<div class="panel-body">
 								<div class="col-sm-6 col-sm-offset-3 col-xs-12" id="trainee-form">
@@ -48,6 +83,7 @@
 									</div>
 								</div>
 							</div>
+						</div>
 						</div>
 					</div>
 					<div class="app-panel col-sm-6 col-sm-offset-3 col-xs-12" id="trips-timestamps">
@@ -132,7 +168,7 @@
 							</div>
 						</div>
 					</div>
-					<input type="button" class="btn btn-danger logout" value="Logout">
+
 				</div>
 				</div>
 			</div>

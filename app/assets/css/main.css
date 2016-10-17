@@ -1,11 +1,27 @@
 .before-ready>.loader-container{
 	margin-top: 150px;
 }
+body, html{
+	height: 100%;
+	width: 100%;
+}
 
+body{
+	background-image: url('../img/login.png');
+	background-position: center;
+	background-size: auto 100%;
+}
+#nav-logout{
+	margin-top: 9px;
+}
 .top-panel{
 	display: none;
-	margin-top: 10px;
-	margin-bottom: 10px;
+	margin-top: 60px;
+}
+
+.top-panel .jumbotron{
+	background-color: rgba(255, 255, 255, 0.88);
+	padding-bottom: 100px;
 }
 
 .fail-msg, #trainee-submit-fail-msg{
