@@ -128,4 +128,21 @@
 		
 		return $session_id;
 	}
+
+	function createTrip($trip, $session_id){
+		global $db;
+		$duration = (int)$trip['stop'] - (int)$trip['start'];
+		
+		try{
+			($stmt = $db->prepare("INSERT INTO `eco_trips`(`session_id`, `start_at`, `stop_at`, `duration`) VALUES (?, FROM_UNIXTIME(?), FROM_UNIXTIME(?), ?)")) OR trigger_error('');
+			($stmt -> bind_param('iiii', $session_id, $trip['start'], $trip['stop'], $duration)) OR trigger_error('');
+			($stmt -> execute()) OR trigger_error('');
+			$trip_id = $db->insert_id;
+			($stmt->close()) OR trigger_error('');
+		} catch(Exception $e) {
+			trigger_error("Couldn't create new trip");
+		}
+		
+		return $trip_id;
+	}
 ?>
