@@ -112,4 +112,20 @@
 		}
 		return $device_id;
 	}
+
+	function createSession($trainee, $intructor_id){
+		global $db;
+		$device_id = getLinkedDeviceId($intructor_id);
+		try{
+			($stmt = $db->prepare("INSERT INTO `eco_sessions`(`instructor_user_id`, `device_id`, `created_at`, `trainee_name`, `trainee_surname`, `trainee_company`, `trainee_birthday`, `trainee_license`) VALUES (?, ?, NOW(), ?, ?, ?, ?, ?)")) OR trigger_error('');
+			($stmt -> bind_param('iisssss', $intructor_id, $device_id, $trainee['name'],  $trainee['surname'],  $trainee['company'],  $trainee['birthday'],  $trainee['license'])) OR trigger_error('');
+			($stmt -> execute()) OR trigger_error('');
+			$session_id = $db->insert_id;
+			($stmt->close()) OR trigger_error('');
+		} catch(Exception $e) {
+			trigger_error("Couldn't create new driving session");
+		}
+		
+		return $session_id;
+	}
 ?>
