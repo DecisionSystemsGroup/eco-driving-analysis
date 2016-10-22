@@ -70,4 +70,46 @@
 			$app->halt(401, $resp);
 		}
 	}
+	
+	function getUserId($token){
+		global $db;
+		try{
+			($stmt = $db->prepare("SELECT `id` FROM `eco_users` WHERE `api_token`=? LIMIT 1")) OR trigger_error('');
+			($stmt -> bind_param('s', $token)) OR trigger_error('');
+			($stmt -> execute()) OR trigger_error('');
+			($stmt -> bind_result($user_id)) OR trigger_error('');
+			($stmt->store_result()) OR trigger_error('');
+			$userExists = $stmt->num_rows==1?true:false;
+			if($userExists){
+				($stmt->fetch()) OR trigger_error('');
+			} else {
+				trigger_error('');
+			}
+			($stmt->close()) OR trigger_error('');
+		} catch(Exception $e) {
+			trigger_error("Couldn't get user id");
+		}
+		return $user_id;
+	}
+
+	function getLinkedDeviceId($user_id){
+		global $db;
+		try{
+			($stmt = $db->prepare("SELECT `id` FROM `eco_devices` WHERE `user_id`=? LIMIT 1")) OR trigger_error('');
+			($stmt -> bind_param('i', $user_id)) OR trigger_error('');
+			($stmt -> execute()) OR trigger_error('');
+			($stmt -> bind_result($device_id)) OR trigger_error('');
+			($stmt->store_result()) OR trigger_error('');
+			$deviceExists = $stmt->num_rows==1?true:false;
+			if($deviceExists){
+				($stmt->fetch()) OR trigger_error('');
+			} else {
+				trigger_error('');
+			}
+			($stmt->close()) OR trigger_error('');
+		} catch(Exception $e) {
+			trigger_error("Couldn't get device id");
+		}
+		return $device_id;
+	}
 ?>
