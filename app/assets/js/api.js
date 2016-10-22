@@ -12,7 +12,7 @@ var api = (function(){
 			type: 'GET',
 			url: _apiUrl+"/authentication/",
 			headers: {
-				"Accept":"application/json"
+				"Accept": "application/json"
 			},
 			data : {"username": data.username, "password": data.password},
 			success: function (response){
@@ -30,7 +30,8 @@ var api = (function(){
 			type: 'POST',
 			url: _apiUrl+"/session/",
 			headers: {
-				"Accept":"application/json"
+				"Accept": "application/json",
+				"token": sessionStorage.token
 			},
 			data : data,
 			success: function (response){
