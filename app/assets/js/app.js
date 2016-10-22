@@ -116,7 +116,7 @@ var app = (function(){
         $('.trip-controls-start>.btn').on('click', function(){
             var data = {
 				tripId: $(this).closest('.trip-timestamps-container').data('trip'),
-                start: new Date().getTime()
+                start: getTimestamp()
             }
             trigger('trip-started', data);
         });
@@ -125,10 +125,14 @@ var app = (function(){
         $('.trip-controls-stop>.btn').on('click', function(){
             var data = {
 				tripId: $(this).closest('.trip-timestamps-container').data('trip'),
-                stop: new Date().getTime()
+                stop: getTimestamp()
             }
             trigger('trip-stopped', data);
         });
+	}
+	
+	function getTimestamp(){
+		return Math.floor(new Date().getTime()/1000);
 	}
 	
 	function hideLoader(){
