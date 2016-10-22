@@ -192,7 +192,7 @@ var app = (function(){
 		if(tripData.stop){
 			tempTrip.stop = tripData.stop;
 			
-			data = {
+			var data = {
 				tripId: tripData.tripId,
 				timestamps: tempTrip
 			}

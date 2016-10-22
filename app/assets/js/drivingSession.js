@@ -42,6 +42,7 @@ var drivingSession = (function(){
 	
 	function _saveToStorage(){
 		_storage.drivingSession = JSON.stringify(_data);
+		_loadFromStorage();	//reset object reference
 	}
 
 	function _loadFromStorage(){
