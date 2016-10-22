@@ -37,4 +37,37 @@
 			throw new Exception('Internal server error');
 		}
 	}
+	
+	function userTokenCheck(){
+		global $app, $db;
+		
+		try{
+			$token = $app->request->headers->get('token');
+			($stmt = $db->prepare("SELECT `api_token_expiration` FROM `eco_users` WHERE `api_token`=? LIMIT 1")) OR trigger_error('');
+			($stmt -> bind_param('s', $token)) OR trigger_error('');
+			($stmt -> execute()) OR trigger_error('');
+			($stmt -> bind_result($expiresAt)) OR trigger_error('');
+			($stmt->store_result()) OR trigger_error('');
+			$tokenExists = $stmt->num_rows==1?true:false;
+			if($tokenExists){
+				($stmt->fetch()) OR trigger_error('');
+			}
+			($stmt->close()) OR trigger_error('');
+		} catch(Exception $e) {
+			$resp = array(
+					'success' => false,
+					'error' => "Internal server error"
+			);
+			$resp = json_encode($resp);
+			$app->halt(500, $resp);
+		}
+		if ( !$tokenExists || !userTokenIsValid($token, $expiresAt) ) {
+			$resp = array(
+				'success' => false,
+				'error' => "Unauthorized, bad credentials"
+			);
+			$resp = json_encode($resp);
+			$app->halt(401, $resp);
+		}
+	}
 ?>
