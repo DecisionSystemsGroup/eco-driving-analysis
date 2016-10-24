@@ -51,7 +51,7 @@ var login = (function(){
 	}
 
 	function isLogged(){
-		if(window.localStorage.logged||window.sessionStorage.logged){
+		if((window.localStorage.logged||window.sessionStorage.logged) && !isTokenExpired()){
 			if(!window.sessionStorage.logged){	//If the sessionStorage.logged is not yet defined the token has been stored at the localStorage for persistent use.
 				sessionStorage.clear();
 				_copyLocalStorageToSessionStorage();
@@ -61,6 +61,18 @@ var login = (function(){
 		else{
 			return false;
 		}
+	}
+
+	function isTokenExpired(){
+		if(!window.localStorage.logged && !window.sessionStorage.logged){	//if there is no token return false
+			return false;
+		}
+
+		var expirationDate = window.localStorage.tokenExpires || window.sessionStorage.tokenExpires,
+			now = new Date();
+		expirationDate = new Date(expirationDate);
+
+		return (now>expirationDate);
 	}
 
 	function _copyLocalStorageToSessionStorage(){
@@ -81,9 +93,11 @@ var login = (function(){
 		if(response.rememberMe){
 			window.localStorage.logged = true;
 			window.localStorage.token = response.token;
+			window.localStorage.tokenExpires = response.expires;
 		}
 		window.sessionStorage.logged = true;
 		window.sessionStorage.token = response.token;
+		window.sessionStorage.tokenExpires = response.expires;
 		_trigger('login-finished');
 	}
 
