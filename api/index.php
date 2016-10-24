@@ -65,6 +65,7 @@
 							}
 							$response['success'] = true;
 							$response['token'] = $db_api_token;
+							$response['expires'] = $db_api_token_expiration;
 							
 							$response['user'] = array(
 								'id' => $db_id,
