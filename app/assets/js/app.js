@@ -185,6 +185,7 @@ var app = (function(){
 	function reset(){
 		login.logout();
 		drivingSession.clear();
+		resetTripPanels();
 		showLogin();
 	}
 	
@@ -202,6 +203,12 @@ var app = (function(){
 		}
 	}
 	
+	function resetTripPanels(){
+		var containers = $('.trip-timestamps-container')
+		containers.find('.trip-controls-stop').hide();
+		containers.find('.trip-controls-start').show();
+	}
+
 	function showTripStop(tripData){
 		var tripWrapper = $('.trip-timestamps-container[data-trip="'+tripData.tripId+'"]');
 		tripWrapper.find('.trip-controls-start').hide();
