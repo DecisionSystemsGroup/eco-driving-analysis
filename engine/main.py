@@ -254,5 +254,4 @@ trip_trainee_2 = create_dataset(trip_trainee_2)
 results = get_results(trip_trainee_1, trip_instructor, trip_trainee_2)
 
 # Print Results
-print "Instructor: {:3.2f}".format(results['ins']*100)+"%"
-print "Trainee: {:3.2f}".format(results['trn']*100)+"%"
+print "{:3.2f}".format(results['ins']*100)+",{:3.2f}".format(results['trn']*100)
