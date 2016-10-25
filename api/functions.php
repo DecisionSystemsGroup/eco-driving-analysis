@@ -112,6 +112,27 @@
 		}
 		return $device_id;
 	}
+	
+	function getLinkedDeviceImei($user_id){
+		global $db;
+		try{
+			($stmt = $db->prepare("SELECT `imei` FROM `eco_devices` WHERE `user_id`=? LIMIT 1")) OR trigger_error('');
+			($stmt -> bind_param('i', $user_id)) OR trigger_error('');
+			($stmt -> execute()) OR trigger_error('');
+			($stmt -> bind_result($device_imei)) OR trigger_error('');
+			($stmt->store_result()) OR trigger_error('');
+			$deviceExists = $stmt->num_rows==1?true:false;
+			if($deviceExists){
+				($stmt->fetch()) OR trigger_error('');
+			} else {
+				trigger_error('');
+			}
+			($stmt->close()) OR trigger_error('');
+		} catch(Exception $e) {
+			trigger_error("Couldn't get device imei");
+		}
+		return $device_imei;
+	}
 
 	function createSession($trainee, $intructor_id){
 		global $db;
