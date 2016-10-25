@@ -18,6 +18,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 #!/usr/bin/python
+import os
 import sys
 import MySQLdb as sql
 import json
@@ -208,7 +209,7 @@ def get_results(dataset_trainee_1, dataset_instructor, dataset_trainee_2):
 	}
 
 # Load configuration information
-with open('config.json') as json_data_file:
+with open(os.path.dirname(os.path.realpath(__file__))+'/config.json') as json_data_file:
 	config = json.load(json_data_file)
 
 # Load Arguments
