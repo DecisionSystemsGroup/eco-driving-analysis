@@ -170,14 +170,26 @@
 	function updateSessionWithTrips($session_id, $trip1_id, $trip2_id, $trip3_id){
 		global $db;
 		try{
-			($stmt = $db->prepare("UPDATE `eco_sessions` SET (`trip1_id`=?, `trip2_id`=?`, trip3_id`=?) WHERE `id`=?")) OR trigger_error();
-			($stmt -> bind_param('iiii', $trip1_id, $trip2_id, $trip3_id, $session_id)) OR trigger_error();
-			($stmt -> execute()) OR trigger_error();
+			($stmt = $db->prepare("UPDATE `eco_sessions` SET `trip1_id`=?,`trip2_id`=?,`trip3_id`=? WHERE `id`=?")) OR trigger_error('');
+			($stmt -> bind_param('iiii', $trip1_id, $trip2_id, $trip3_id, $session_id)) OR trigger_error('');
+			($stmt -> execute()) OR trigger_error('');
 			$result = ($stmt->affected_rows==1);
 			$stmt->close();
 			return $result;
 		} catch(Exception $e) {
 			throw new Exception("Couldn't update the driving session with trip ids");
 		}
+	}
+	
+	function getTimestampsForEngine($start, $stop){
+		$date = new DateTime('now', new DateTimeZone('UTC'));
+		
+		$date->setTimestamp($start);
+		$str = '"'.$date->format('Y-m-d H:i:s').'"';
+		
+		$date->setTimestamp($stop);
+		$str .= ' "'.$date->format('Y-m-d H:i:s').'"';
+		
+		return $str;
 	}
 ?>
