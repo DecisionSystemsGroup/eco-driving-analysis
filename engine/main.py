@@ -155,7 +155,7 @@ def read_trip_from_database(trip_start, trip_stop, trip_class):
 			"(`time` >= '" + trip_start + "') && " +
 			"(`time` <= '" + trip_stop + "')" +
 		") && (" +
-			"`device_imei` = " + device_imei +
+			"`imei` = " + device_imei +
 		")"
 	)
 
