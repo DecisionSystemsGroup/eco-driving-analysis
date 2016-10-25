@@ -36,7 +36,7 @@ def create_dataset(input_list):
 
 	# Split list to data and target(classes)
 	data = []
-	target = []  
+	target = []
 	for row in input_list:
 		data.append(row[:24])
 		target.append(row[24])
@@ -58,13 +58,13 @@ def merge_qualities(data):
 
 	qualities = [];
 	for row in data_qual:
-		# For each row do the sum of each col * 10 ^ a power from -10 to 10 
-		# starting from -10 for the first col and ending to 10 for the 20th            
+		# For each row do the sum of each col * 10 ^ a power from -10 to 10
+		# starting from -10 for the first col and ending to 10 for the 20th
 		merger = 0.0
 		power = -10;
 		for col in row:
 			merger += int(col) * (10 ** power)
-			power += 1   
+			power += 1
 		qualities.append(merger)    # Save the generated num to the qual array
 
 	data_rest = data[:,21:] # Subset maxAcc, maxBrk and Speed from the dataset
@@ -82,7 +82,7 @@ def read_trip_from_database(trip_start, trip_stop, trip_class):
 	# Get the trip from the database. If every driving quality in a row is zero
 	# or null ignore the row.
 	cur.execute(
-		"SELECT" + 
+		"SELECT" +
 			"`driving_quality0`," +
 			"`driving_quality1`," +
 			"`driving_quality2`," +
@@ -109,52 +109,54 @@ def read_trip_from_database(trip_start, trip_stop, trip_class):
 			"`speed`" +
 		"FROM `telemetry`" +
 		"WHERE ("+
-			"(`driving_quality0` != 0) ||" + 
-			"(`driving_quality1` != 0) ||" + 
-			"(`driving_quality2` != 0) ||" + 
-			"(`driving_quality3` != 0) ||" + 
-			"(`driving_quality4` != 0) ||" + 
-			"(`driving_quality5` != 0) ||" + 
-			"(`driving_quality6` != 0) ||" + 
-			"(`driving_quality7` != 0) ||" + 
-			"(`driving_quality8` != 0) ||" + 
-			"(`driving_quality9` != 0) ||" + 
-			"(`driving_quality10` != 0) ||" + 
-			"(`driving_quality11` != 0) ||" + 
-			"(`driving_quality12` != 0) ||" + 
-			"(`driving_quality13` != 0) ||" + 
-			"(`driving_quality14` != 0) ||" + 
-			"(`driving_quality15` != 0) ||" + 
-			"(`driving_quality16` != 0) ||" + 
-			"(`driving_quality17` != 0) ||" + 
-			"(`driving_quality18` != 0) ||" + 
-			"(`driving_quality19` != 0) ||" + 
+			"(`driving_quality0` != 0) ||" +
+			"(`driving_quality1` != 0) ||" +
+			"(`driving_quality2` != 0) ||" +
+			"(`driving_quality3` != 0) ||" +
+			"(`driving_quality4` != 0) ||" +
+			"(`driving_quality5` != 0) ||" +
+			"(`driving_quality6` != 0) ||" +
+			"(`driving_quality7` != 0) ||" +
+			"(`driving_quality8` != 0) ||" +
+			"(`driving_quality9` != 0) ||" +
+			"(`driving_quality10` != 0) ||" +
+			"(`driving_quality11` != 0) ||" +
+			"(`driving_quality12` != 0) ||" +
+			"(`driving_quality13` != 0) ||" +
+			"(`driving_quality14` != 0) ||" +
+			"(`driving_quality15` != 0) ||" +
+			"(`driving_quality16` != 0) ||" +
+			"(`driving_quality17` != 0) ||" +
+			"(`driving_quality18` != 0) ||" +
+			"(`driving_quality19` != 0) ||" +
 			"(`driving_quality20` != 0) ||" +
-			"(`driving_quality0` != null) ||" + 
-			"(`driving_quality1` != null) ||" + 
-			"(`driving_quality2` != null) ||" + 
-			"(`driving_quality3` != null) ||" + 
-			"(`driving_quality4` != null) ||" + 
-			"(`driving_quality5` != null) ||" + 
-			"(`driving_quality6` != null) ||" + 
-			"(`driving_quality7` != null) ||" + 
-			"(`driving_quality8` != null) ||" + 
-			"(`driving_quality9` != null) ||" + 
-			"(`driving_quality10` != null) ||" + 
-			"(`driving_quality11` != null) ||" + 
-			"(`driving_quality12` != null) ||" + 
-			"(`driving_quality13` != null) ||" + 
-			"(`driving_quality14` != null) ||" + 
-			"(`driving_quality15` != null) ||" + 
-			"(`driving_quality16` != null) ||" + 
-			"(`driving_quality17` != null) ||" + 
-			"(`driving_quality18` != null) ||" + 
-			"(`driving_quality19` != null) ||" + 
+			"(`driving_quality0` != null) ||" +
+			"(`driving_quality1` != null) ||" +
+			"(`driving_quality2` != null) ||" +
+			"(`driving_quality3` != null) ||" +
+			"(`driving_quality4` != null) ||" +
+			"(`driving_quality5` != null) ||" +
+			"(`driving_quality6` != null) ||" +
+			"(`driving_quality7` != null) ||" +
+			"(`driving_quality8` != null) ||" +
+			"(`driving_quality9` != null) ||" +
+			"(`driving_quality10` != null) ||" +
+			"(`driving_quality11` != null) ||" +
+			"(`driving_quality12` != null) ||" +
+			"(`driving_quality13` != null) ||" +
+			"(`driving_quality14` != null) ||" +
+			"(`driving_quality15` != null) ||" +
+			"(`driving_quality16` != null) ||" +
+			"(`driving_quality17` != null) ||" +
+			"(`driving_quality18` != null) ||" +
+			"(`driving_quality19` != null) ||" +
 			"(`driving_quality20` != null)" +
 		") && (" +
 			"(`time` >= '" + trip_start + "') && " +
 			"(`time` <= '" + trip_stop + "')" +
-		")"	
+		") && (" +
+			"`device_imei` = " + device_imei +
+		")"
 	)
 
 	# Save the object in a list
@@ -176,14 +178,14 @@ def get_results(dataset_trainee_1, dataset_instructor, dataset_trainee_2):
 			(
 				dataset_instructor['data'],
 				dataset_trainee_1['data']
-			), 
+			),
 			axis=0
 		),
 		np.concatenate(
 			(
 				dataset_instructor['target'],
 				dataset_trainee_1['target']
-			), 
+			),
 			axis=0
 		),
 	)
@@ -204,20 +206,21 @@ def get_results(dataset_trainee_1, dataset_instructor, dataset_trainee_2):
 		'ins': sum_ins / (sum_ins + sum_trn),
 		'trn': sum_trn / (sum_ins + sum_trn)
 	}
-	
+
 # Load configuration information
 with open('config.json') as json_data_file:
 	config = json.load(json_data_file)
 
 # Load Arguments
-trip_trainee_1_start = sys.argv[1]
-trip_trainee_1_stop = sys.argv[2]
+device_imei = sys.argv[1]
+trip_trainee_1_start = sys.argv[2]
+trip_trainee_1_stop = sys.argv[3]
 
-trip_instructor_start = sys.argv[3]
-trip_instructor_stop = sys.argv[4]
+trip_instructor_start = sys.argv[4]
+trip_instructor_stop = sys.argv[5]
 
-trip_trainee_2_start = sys.argv[5]
-trip_trainee_2_stop = sys.argv[6]
+trip_trainee_2_start = sys.argv[6]
+trip_trainee_2_stop = sys.argv[7]
 
 # Connect to the database
 db = sql.connect(
@@ -250,5 +253,5 @@ trip_trainee_2 = create_dataset(trip_trainee_2)
 results = get_results(trip_trainee_1, trip_instructor, trip_trainee_2)
 
 # Print Results
-print "Instructor: {:3.2f}".format(results['ins']*100)+"%" 
+print "Instructor: {:3.2f}".format(results['ins']*100)+"%"
 print "Trainee: {:3.2f}".format(results['trn']*100)+"%"
