@@ -61,6 +61,9 @@ var app = (function(){
 					api.createDrivingSession(drivingSession.getData());
 				}
 				break;
+			case 'session-cancel':
+				resetSession();
+				break;
 			case 'new-session-success':
 				renderResultsSuccess(data);
 				break;
@@ -132,6 +135,11 @@ var app = (function(){
             }
             trigger('trip-stopped', data);
         });
+
+		//session cancel
+        $('#session-cancel').on('click', function(){
+            trigger('session-cancel', {});
+        });
 	}
 	
 	function getTimestamp(){
@@ -191,6 +199,13 @@ var app = (function(){
 		resetTripPanels();
 		showLogin();
 		stopTimer();
+	}
+
+	function resetSession(){
+		drivingSession.clear();
+		resetTripPanels();
+		stopTimer();
+		initPanels();
 	}
 	
 	function updateCurrentTrip(tripData){
