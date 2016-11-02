@@ -63,6 +63,7 @@ var app = (function(){
 				break;
 			case 'session-cancel':
 				resetSession();
+				initPanels();
 				break;
 			case 'new-session-success':
 				renderResultsSuccess(data);
@@ -195,17 +196,14 @@ var app = (function(){
 
 	function reset(){
 		login.logout();
-		drivingSession.clear();
-		resetTripPanels();
+		resetSession();
 		showLogin();
-		stopTimer();
 	}
 
 	function resetSession(){
 		drivingSession.clear();
 		resetTripPanels();
 		stopTimer();
-		initPanels();
 	}
 	
 	function updateCurrentTrip(tripData){
