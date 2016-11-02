@@ -64,7 +64,7 @@ var app = (function(){
 			case 'new-session-success':
 				renderResultsSuccess(data);
 				break;
-			case 'new-session-faill':
+			case 'new-session-fail':
 				renderResultsFaill(data);
 				break;
 			case 'new-session-after':
@@ -271,6 +271,7 @@ var app = (function(){
 	}
 	
 	function renderResultsFaill(data){
+		alertify.error( data.error );
 	}
 	
 	function showResultsContainer(){
