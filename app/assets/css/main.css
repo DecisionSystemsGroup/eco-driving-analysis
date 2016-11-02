@@ -44,3 +44,7 @@ body{
 .trip-timestamps-container, .trip-controls-stop{
 	display: none;
 }
+
+.trip-timestamp-stop{
+	font-size: 3em;
+}

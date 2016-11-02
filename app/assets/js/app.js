@@ -10,7 +10,8 @@ var app = (function(){
             start: undefined,
             stop: undefined
         },
-		resultsChart = undefined;
+		resultsChart = undefined,
+		timerIntervalId;
 	
 	function trigger(evt, data){
 		if(settings.debugging){
@@ -44,9 +45,11 @@ var app = (function(){
 			case 'trip-started':
 				updateCurrentTrip(data);
 				showTripStop(data);
+				startTimer(data);
 				break;
 			case 'trip-stopped':
 				updateCurrentTrip(data);
+				stopTimer();
 				break;
 			case 'trip-complete':
 				drivingSession.update('trip'+data.tripId, data.timestamps);
@@ -187,6 +190,7 @@ var app = (function(){
 		drivingSession.clear();
 		resetTripPanels();
 		showLogin();
+		stopTimer();
 	}
 	
 	function updateCurrentTrip(tripData){
@@ -204,7 +208,8 @@ var app = (function(){
 	}
 	
 	function resetTripPanels(){
-		var containers = $('.trip-timestamps-container')
+		var containers = $('.trip-timestamps-container');
+		containers.find('.trip-timestamp-stop').text('00:00:00');
 		containers.find('.trip-controls-stop').hide();
 		containers.find('.trip-controls-start').show();
 	}
@@ -274,6 +279,31 @@ var app = (function(){
 		resultsWrapper.find('.results-container').show();
 	}
 	
+	function startTimer(data){
+		var timerWrapper = $("[data-trip='" + data.tripId + "'] .trip-timestamp-stop");
+		timerIntervalId = setInterval(function(){
+			updateTimer(data.start, timerWrapper);
+		}, 1000);
+	}
+
+	function stopTimer(){
+		clearInterval(timerIntervalId);
+	}
+
+	function updateTimer(start, el){
+		el.text(secToHHMMSS( (Date.now()/1000 | 0) - start));
+	}
+
+	function secToHHMMSS(time){
+		time = parseInt(time);	//potential bugs with <sec values
+		//  |0 aka .floor()
+		var hrs = (time / 3600) | 0;
+		var mins = ((time % 3600) / 60) | 0;
+		var secs = time % 60;
+
+		return ( hrs<99?("00"+hrs).slice(-2):hrs ) +":"+ ( ("00"+mins).slice(-2) ) +":"+ ( ("00"+secs).slice(-2) );
+	}
+
 	return {
 		trigger: trigger,
 		init: init,
