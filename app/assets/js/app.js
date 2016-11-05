@@ -222,7 +222,7 @@ var app = (function(){
 	
 	function resetTripPanels(){
 		var containers = $('.trip-timestamps-container');
-		containers.find('.trip-timestamp-stop').text('00:00:00');
+		containers.find('.trip-timestamp-timer').text('00:00:00');
 		containers.find('.trip-controls-stop .btn').prop('disabled', true).addClass('btn-default').removeClass('btn-warning');
 		containers.find('.trip-controls-start .btn').prop('disabled', false).addClass('btn-success').removeClass('btn-default');
 	}
@@ -294,7 +294,7 @@ var app = (function(){
 	}
 	
 	function startTimer(data){
-		var timerWrapper = $("[data-trip='" + data.tripId + "'] .trip-timestamp-stop");
+		var timerWrapper = $("[data-trip='" + data.tripId + "'] .trip-timestamp-timer");
 		timerIntervalId = setInterval(function(){
 			updateTimer(data.start, timerWrapper);
 		}, 1000);
