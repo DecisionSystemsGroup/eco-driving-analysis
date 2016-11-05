@@ -163,6 +163,7 @@ var app = (function(){
 	}
 	
 	function initPanels(){
+        resetTripPanels();
 		var lastStep = drivingSession.lastStep();
         $('.app-panel').hide();		
 
