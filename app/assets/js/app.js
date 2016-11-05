@@ -223,20 +223,20 @@ var app = (function(){
 	function resetTripPanels(){
 		var containers = $('.trip-timestamps-container');
 		containers.find('.trip-timestamp-stop').text('00:00:00');
-		containers.find('.trip-controls-stop').hide();
-		containers.find('.trip-controls-start').show();
+		containers.find('.trip-controls-stop .btn').prop('disabled', true).addClass('btn-default').removeClass('btn-warning');
+		containers.find('.trip-controls-start .btn').prop('disabled', false).addClass('btn-success').removeClass('btn-default');
 	}
 
 	function showTripStop(tripData){
 		var tripWrapper = $('.trip-timestamps-container[data-trip="'+tripData.tripId+'"]');
-		tripWrapper.find('.trip-controls-start').hide();
-		tripWrapper.find('.trip-controls-stop').fadeIn();
+		tripWrapper.find('.trip-controls-stop .btn').prop('disabled', false).removeClass('btn-default').addClass('btn-warning');
+		tripWrapper.find('.trip-controls-start .btn').prop('disabled', true).removeClass('btn-success').addClass('btn-default');
 	}
 	
 	function showNextTrip(data){
 		if(data.tripId<3){
 			$('.trip-timestamps-container[data-trip="'+data.tripId+'"]').fadeOut(function(){
-				$('.trip-timestamps-container[data-trip="'+(data.tripId+1)+'"]').fadeIn();
+				$('.trip-timestamps-container[data-trip="'+(data.tripId+1)+'"]').fadeIn('slow');
 			});
 		}
 	}

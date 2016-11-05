@@ -41,7 +41,7 @@ body{
 	margin-bottom: 10px;
 }
 
-.trip-timestamps-container, .trip-controls-stop{
+.trip-timestamps-container{
 	display: none;
 }
 
