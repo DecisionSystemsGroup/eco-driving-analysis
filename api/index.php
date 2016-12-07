@@ -100,5 +100,50 @@
 		$app->response->setBody($response);
 	});
 	
+	$app->post('/v1/session/', 'userTokenCheck', function () use ($app, $db) {
+		try{
+			$instructor_id = getUserId($app->request->headers->get('token'));
+			$trainee_data = $app->request->params('traineeInfo');
+			
+			$new_session_id = createSession($trainee_data, $instructor_id);
+			$trip1_id = createTrip($app->request->params('trip1'), $new_session_id);
+			$trip2_id = createTrip($app->request->params('trip2'), $new_session_id);
+			$trip3_id = createTrip($app->request->params('trip3'), $new_session_id);
+			
+			updateSessionWithTrips($new_session_id, $trip1_id, $trip2_id, $trip3_id);
+			
+			$response = array();
+			$response['success'] = true;
+			$response['sessionId'] = $new_session_id;
+			
+			$imei = getLinkedDeviceImei($instructor_id);
+			
+			$trip1Timestamps = getTimestampsForEngine($app->request->params('trip1')['start'], $app->request->params('trip1')['stop']);
+			$trip2Timestamps = getTimestampsForEngine($app->request->params('trip2')['start'], $app->request->params('trip2')['stop']);
+			$trip3Timestamps = getTimestampsForEngine($app->request->params('trip3')['start'], $app->request->params('trip3')['stop']);
+			
+			$tripTimestamps = $trip1Timestamps.' '.$trip2Timestamps.' '.$trip3Timestamps;
+			
+			$pyResults = exec('python ../engine/main.py '.$imei.' '.$tripTimestamps);
+			
+			$pyResults = explode("," , $pyResults);
+			if(!is_array($pyResults) OR !isset($pyResults[0], $pyResults[1])){
+				trigger_error('couldn\'t calculate results');
+			} else {
+				$response['results'] = array();
+				$response['results']['instructor'] = $pyResults[0];
+				$response['results']['trainee'] = $pyResults[1];
+				$app->response->setStatus(201);
+			}
+
+		} catch(Exception $e) {
+			$app->response->setStatus(500);
+			$response['success'] = false;
+			$response['error'] = $e->getMessage();
+		}
+		
+		$response = json_encode($response);
+		$app->response->setBody($response);
+	});
 	$app->run();
 ?>
