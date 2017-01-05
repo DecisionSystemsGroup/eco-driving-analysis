@@ -48,3 +48,7 @@ body{
 .trip-timestamp-timer{
 	font-size: 3em;
 }
+
+.fw-bold{
+	font-weight: bold;
+}

@@ -44,10 +44,28 @@ var api = (function(){
 			}
 		});
 	}
+
+	function getUserInfo(){
+		$.ajax({
+			type: 'GET',
+			url: _apiUrl+"/user/",
+			headers: {
+				"Accept": "application/json",
+				"token": sessionStorage.token
+			},
+			success: function (response){
+				_trigger('user-info-returned', response);
+			},
+			error: function (response){
+				_trigger('user-info-fail', response.responseJSON);
+			}
+		});
+	}
 	
 	return {
 		init: init,
 		authenticate: authenticate,
+		getUserInfo: getUserInfo,
 		createDrivingSession: createDrivingSession
 	};
 })();

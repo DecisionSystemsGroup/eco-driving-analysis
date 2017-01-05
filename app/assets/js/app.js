@@ -77,6 +77,12 @@ var app = (function(){
 			case 'before-reload-session-complete':
 				drivingSession.clear();
 				break;
+			case 'instructorModal-invoked':
+				api.getUserInfo();
+				break;
+			case 'user-info-returned':
+				rendertUserInfo(data.user);
+				break;
 		}
 	}
 	
@@ -141,6 +147,11 @@ var app = (function(){
         $('#session-cancel').on('click', function(){
             trigger('session-cancel', {});
         });
+
+		//instructor modal
+		$('#instructorModal-invoke').on('click', function(){
+			trigger('instructorModal-invoked', {});
+		});
 	}
 	
 	function getTimestamp(){
@@ -317,6 +328,18 @@ var app = (function(){
 		var secs = time % 60;
 
 		return ( hrs<99?("00"+hrs).slice(-2):hrs ) +":"+ ( ("00"+mins).slice(-2) ) +":"+ ( ("00"+secs).slice(-2) );
+	}
+
+	function rendertUserInfo(user){
+		var modal = $('#instructorModal');
+
+		modal.find('.userName').text(user.name);
+		modal.find('.userSurname').text(user.surname);
+		modal.find('.userUsername').text(user.username);
+		modal.find('.userEmail').text(user.email);
+		modal.find('.userSessions').text(user.sessions_no);
+		modal.find('.userLastLogin').text(user.logged_at);
+		modal.find('.userRegistered').text(user.registered_at);
 	}
 
 	return {
