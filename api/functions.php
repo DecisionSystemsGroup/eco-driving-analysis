@@ -106,6 +106,36 @@
 		return $user_id;
 	}
 
+	function getUserInfo($token){
+		global $db;
+		try{
+			($stmt = $db->prepare("SELECT `id`, `username`, `email`, `name`, `surname`, `sessions_no`, `registered_at`, `logged_at` FROM `eco_users` WHERE `api_token`=? LIMIT 1")) OR trigger_error('');
+			($stmt -> bind_param('s', $token)) OR trigger_error('');
+			($stmt -> execute()) OR trigger_error('');
+			($stmt -> bind_result($id, $username, $email, $name, $surname, $sessions_no, $registered_at, $logged_at)) OR trigger_error('');
+			($stmt->store_result()) OR trigger_error('');
+			$userExists = $stmt->num_rows==1?true:false;
+			if($userExists){
+				($stmt->fetch()) OR trigger_error('');
+			} else {
+				trigger_error('');
+			}
+			($stmt->close()) OR trigger_error('');
+		} catch(Exception $e) {
+			trigger_error("Couldn't get user id");
+		}
+		$userInfo = [];
+		$userInfo['id'] = $id;
+		$userInfo['username'] = $username;
+		$userInfo['email'] = $email;
+		$userInfo['name'] = $name;
+		$userInfo['surname'] = $surname;
+		$userInfo['sessions_no'] = $sessions_no;
+		$userInfo['registered_at'] = $registered_at;
+		$userInfo['logged_at'] = $logged_at;
+		return $userInfo;
+	}
+
 	function getLinkedDeviceId($user_id){
 		global $db;
 		try{

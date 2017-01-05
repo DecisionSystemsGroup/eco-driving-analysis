@@ -100,6 +100,21 @@
 		$app->response->setBody($response);
 	});
 	
+	$app->get('/v1/user/', 'userTokenCheck', function () use ($app, $db) {
+		$response = array();
+		$response['success'] = true;
+		try{
+			$user_info = getUserInfo($app->request->headers->get('token'));
+			$response['user'] = $user_info;
+		} catch(Exception $e) {
+			$app->response->setStatus(500);
+			$response['success'] = false;
+			$response['error'] = $e->getMessage();
+		}
+		$response = json_encode($response);
+		$app->response->setBody($response);
+	});
+	
 	$app->post('/v1/session/', 'userTokenCheck', function () use ($app, $db) {
 		try{
 			$instructor_id = getUserId($app->request->headers->get('token'));
