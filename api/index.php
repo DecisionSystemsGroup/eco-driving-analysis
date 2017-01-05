@@ -130,6 +130,8 @@
 			if(!is_array($pyResults) OR !isset($pyResults[0], $pyResults[1])){
 				trigger_error('couldn\'t calculate results');
 			} else {
+				updateUserSessionNo($instructor_id);
+				
 				$response['results'] = array();
 				$response['results']['instructor'] = $pyResults[0];
 				$response['results']['trainee'] = $pyResults[1];

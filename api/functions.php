@@ -37,6 +37,20 @@
 			throw new Exception('Internal server error');
 		}
 	}
+
+	function updateUserSessionNo($userId){
+		global $db;
+		try{
+			($stmt = $db->prepare("UPDATE `eco_users` SET `sessions_no` = `sessions_no` +1 WHERE `id`=?")) OR trigger_error();
+			($stmt -> bind_param('s', $userId)) OR trigger_error();
+			($stmt -> execute()) OR trigger_error();
+			$result = ($stmt->affected_rows==1);
+			$stmt->close();		
+			return $result;
+		} catch(Exception $e) {
+			throw new Exception('Internal server error');
+		}
+	}
 	
 	function userTokenCheck(){
 		global $app, $db;
