@@ -284,7 +284,7 @@ var app = (function(){
 				title: {
 					display: true,
 					fontSize: 25,
-					text: 'Some Title'
+					text: 'After training similarity'
 				},
 				animation: {
 					duration: 1500,
