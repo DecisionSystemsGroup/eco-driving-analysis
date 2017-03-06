@@ -50,31 +50,8 @@ def create_dataset(input_list):
 	data[data==''] = '0'
 	target[target==''] = '0'
 
-	return {'data': merge_qualities(data), 'target': target}
+	return {'data': data, 'target': target}
 
-def merge_qualities(data):
-	# Merges the quality columns (0 - 20) into one weighted number
-
-	data_qual = data[:,:21] # Subset the driving quality cols
-
-	qualities = [];
-	for row in data_qual:
-		# For each row do the sum of each col * 10 ^ a power from -10 to 10
-		# starting from -10 for the first col and ending to 10 for the 20th
-		merger = 0.0
-		power = -10;
-		for col in row:
-			merger += int(col) * (10 ** power)
-			power += 1
-		qualities.append(merger)    # Save the generated num to the qual array
-
-	data_rest = data[:,21:] # Subset maxAcc, maxBrk and Speed from the dataset
-
-	qualities = np.array(qualities) # Transform the qualities to numpy array
-	qualities = qualities[:, None]  # Make qualities a 2D array for hstack to work
-
-	data_exp = np.hstack((qualities,data_rest)) # Merge qualities and the rest
-	return data_exp
 
 def read_trip_from_database(trip_start, trip_stop, trip_class):
 	# Create cursor object for the execution of the needed queries
